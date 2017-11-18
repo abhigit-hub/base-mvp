@@ -43,6 +43,7 @@ import butterknife.ButterKnife;
 * 3. Refresh Icon
 * 4. Pull to Refresh
 * 5. Item On click- BlogDetailsActivity
+* 6. Retry Button
 * */
 
 public class MainActivity extends BaseActivity implements MainMvpView {

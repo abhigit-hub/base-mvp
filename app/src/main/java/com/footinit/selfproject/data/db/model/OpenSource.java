@@ -1,5 +1,8 @@
 package com.footinit.selfproject.data.db.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Abhijit on 17-11-2017.
  */
 
-public class OpenSource {
+public class OpenSource implements Parcelable {
 
     @Expose
     @SerializedName("project_url")
@@ -66,4 +69,38 @@ public class OpenSource {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(projectUrl);
+        parcel.writeString(imgUrl);
+        parcel.writeString(title);
+        parcel.writeString(author);
+        parcel.writeString(description);
+    }
+
+    public static Parcelable.Creator<OpenSource> CREATOR = new Creator<OpenSource>() {
+        @Override
+        public OpenSource createFromParcel(Parcel parcel) {
+            OpenSource openSource = new OpenSource();
+
+            openSource.projectUrl = parcel.readString();
+            openSource.imgUrl = parcel.readString();
+            openSource.title = parcel.readString();
+            openSource.author = parcel.readString();
+            openSource.description = parcel.readString();
+
+            return openSource;
+        }
+
+        @Override
+        public OpenSource[] newArray(int i) {
+            return new OpenSource[i];
+        }
+    };
 }

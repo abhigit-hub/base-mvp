@@ -12,7 +12,7 @@ import com.footinit.selfproject.ui.base.MvpView;
 public interface BlogDetailsMvpPresenter<V extends BlogDetailsMvpView>
         extends MvpPresenter<V> {
 
-    void onBlogDetailsDisplayError();
+    void onBlogDetailsDisplayedError();
 
     void onBlogFABClicked();
 }

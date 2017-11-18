@@ -26,6 +26,9 @@ import com.footinit.selfproject.ui.main.opensource.OpenSourceAdapter;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceMvpPresenter;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceMvpView;
 import com.footinit.selfproject.ui.main.opensource.OpenSourcePresenter;
+import com.footinit.selfproject.ui.main.opensourcedetails.OSDetailMvpPresenter;
+import com.footinit.selfproject.ui.main.opensourcedetails.OSDetailMvpView;
+import com.footinit.selfproject.ui.main.opensourcedetails.OSDetailPresenter;
 import com.footinit.selfproject.ui.splash.SplashMvpPresenter;
 import com.footinit.selfproject.ui.splash.SplashMvpView;
 import com.footinit.selfproject.ui.splash.SplashPresenter;
@@ -111,6 +114,12 @@ public class ActivityModule {
     @Provides
     @PerActivity
     BlogDetailsMvpPresenter<BlogDetailsMvpView> providesBlogDetailsPresenter(BlogDetailsPresenter<BlogDetailsMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    OSDetailMvpPresenter<OSDetailMvpView> providesOSDetailPresenter(OSDetailPresenter<OSDetailMvpView> presenter) {
         return presenter;
     }
 

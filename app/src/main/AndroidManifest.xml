@@ -39,6 +39,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.footinit.selfproject.ui.main.MainActivity" />
         </activity>
+        <activity
+            android:name=".ui.main.opensourcedetails.OSDetailActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.main.MainActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.main.MainActivity" />
+        </activity>
 
     </application>
 </manifest>

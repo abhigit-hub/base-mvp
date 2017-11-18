@@ -24,7 +24,7 @@ public class BlogDetailsPresenter<V extends BlogDetailsMvpView> extends BasePres
     }
 
     @Override
-    public void onBlogDetailsDisplayError() {
+    public void onBlogDetailsDisplayedError() {
         getMvpView().returnToMainActivity();
     }
 

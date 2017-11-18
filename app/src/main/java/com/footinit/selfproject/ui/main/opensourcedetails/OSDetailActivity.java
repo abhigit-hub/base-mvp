@@ -1,4 +1,4 @@
-package com.footinit.selfproject.ui.main.blogdetails;
+package com.footinit.selfproject.ui.main.opensourcedetails;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,9 +17,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.footinit.selfproject.R;
-import com.footinit.selfproject.data.db.model.Blog;
+import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BaseActivity;
-import com.footinit.selfproject.ui.main.blog.BlogFragment;
+import com.footinit.selfproject.ui.main.opensource.OpenSourceFragment;
 
 import javax.inject.Inject;
 
@@ -30,16 +30,24 @@ import butterknife.ButterKnife;
  * Created by Abhijit on 18-11-2017.
  */
 
-public class BlogDetailsActivity extends BaseActivity
-        implements BlogDetailsMvpView {
+public class OSDetailActivity extends BaseActivity implements OSDetailMvpView {
 
     @Inject
-    BlogDetailsMvpPresenter<BlogDetailsMvpView> presenter;
+    OSDetailMvpPresenter<OSDetailMvpView> presenter;
 
-    private Blog currentBlog;
+    private OpenSource currentOpenSource;
+
+    @BindView(R.id.appbar)
+    AppBarLayout appBarLayout;
+
+    @BindView(R.id.ctl_os_detail)
+    CollapsingToolbarLayout collapsingToolbarLayout;
 
     @BindView(R.id.iv_cover_img)
     ImageView ivCover;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @BindView(R.id.tv_title)
     TextView tvTitle;
@@ -47,34 +55,23 @@ public class BlogDetailsActivity extends BaseActivity
     @BindView(R.id.tv_author)
     TextView tvAuthor;
 
-    @BindView(R.id.tv_date)
-    TextView tvDate;
-
     @BindView(R.id.tvDescription)
     TextView tvDescription;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @BindView(R.id.ctl_blog_detail)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-
-    @BindView(R.id.appbar)
-    AppBarLayout appBarLayout;
-
-    @BindView(R.id.fab_blog)
+    @BindView(R.id.fab_os)
     FloatingActionButton fab;
 
+
     public static Intent getStartIntent(Context context) {
-        return new Intent(context, BlogDetailsActivity.class);
+        return new Intent(context, OSDetailActivity.class);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_blog_details);
+        setContentView(R.layout.activity_os_details);
 
-        currentBlog = getIntent().getParcelableExtra(BlogFragment.KEY_PARCELABLE_BLOG);
+        currentOpenSource = getIntent().getParcelableExtra(OpenSourceFragment.KEY_PARCELABLE_OPEN_SOURCE);
 
         getActivityComponent().inject(this);
 
@@ -96,57 +93,33 @@ public class BlogDetailsActivity extends BaseActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        if (currentBlog != null) {
-            if (currentBlog.getCoverImgUrl() != null)
+
+        if (currentOpenSource != null) {
+            if (currentOpenSource.getImgUrl() != null)
                 Glide.with(this)
-                        .load(currentBlog.getCoverImgUrl())
+                        .load(currentOpenSource.getImgUrl())
                         .asBitmap()
                         .fitCenter()
                         .into(ivCover);
 
-            if (currentBlog.getTitle() != null)
-                tvTitle.setText(currentBlog.getTitle());
+            if (currentOpenSource.getTitle() != null)
+                tvTitle.setText(currentOpenSource.getTitle());
 
-            if (currentBlog.getAuthor() != null)
-                tvAuthor.setText(currentBlog.getAuthor());
+            if (currentOpenSource.getAuthor() != null)
+                tvAuthor.setText(currentOpenSource.getAuthor());
 
-            if (currentBlog.getDate() != null)
-                tvDate.setText(currentBlog.getDate());
-
-            if (currentBlog.getDescription() != null)
-                tvDescription.setText(currentBlog.getDescription());
+            if (currentOpenSource.getDescription() != null)
+                tvDescription.setText(currentOpenSource.getDescription());
         } else {
-            onError("There was an error displaying Blog Details");
-            presenter.onBlogDetailsDisplayedError();
+            onError("There was an error displaying Open Source Details");
+            presenter.onOSDetailsDisplayedError();
         }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (currentBlog != null)
-                    presenter.onBlogFABClicked();
-            }
-        });
-    }
-
-    private void setUpCollapsingToolbarLayout() {
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = true;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle(getString(R.string.blog_details));
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbarLayout.setTitle(" ");
-                    isShow = false;
-                }
+                if (currentOpenSource != null)
+                    presenter.onOpenSourceFABClicked();
             }
         });
     }
@@ -162,22 +135,37 @@ public class BlogDetailsActivity extends BaseActivity
         }
     }
 
-    @Override
-    public void onBackPressed() {
+    private void setUpCollapsingToolbarLayout() {
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
 
-        Intent upIntent = NavUtils.getParentActivityIntent(this);
-        assert upIntent != null;
-        upIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
-        if (!NavUtils.shouldUpRecreateTask(this, upIntent)) {
-            NavUtils.navigateUpTo(this, upIntent);
-        }
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle(getString(R.string.open_source_details));
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbarLayout.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
     }
 
     @Override
-    protected void onDestroy() {
-        presenter.onDetach();
-        super.onDestroy();
+    public void onBackPressed() {
+        Intent upIntent = NavUtils.getParentActivityIntent(this);
+        assert upIntent != null;
+        upIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (!NavUtils.shouldUpRecreateTask(this, upIntent)) {
+            NavUtils.navigateUpTo(this, upIntent);
+        }
     }
 
     @Override
@@ -187,12 +175,18 @@ public class BlogDetailsActivity extends BaseActivity
 
     @Override
     public void openInBrowser() {
-        if (currentBlog != null && currentBlog.getBlogUrl() != null) {
+        if (currentOpenSource != null && currentOpenSource.getProjectUrl() != null) {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.addCategory(Intent.CATEGORY_BROWSABLE);
-            intent.setData(Uri.parse(currentBlog.getBlogUrl()));
+            intent.setData(Uri.parse(currentOpenSource.getProjectUrl()));
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.onDetach();
+        super.onDestroy();
     }
 }

@@ -18,7 +18,7 @@ import io.reactivex.functions.Consumer;
  */
 
 public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresenter<V>
-        implements OpenSourceMvpPresenter<V> {
+        implements OpenSourceMvpPresenter<V>, OpenSourceAdapter.Callback {
 
 
     @Inject
@@ -58,5 +58,15 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
                             }
                         })
         );
+    }
+
+    @Override
+    public void onOpenSourceEmptyRetryClicked() {
+        getMvpView().onOpenSourceEmptyRetryClicked();
+    }
+
+    @Override
+    public void onOpenSourceItemClicked(OpenSource openSource) {
+        getMvpView().openOSDetailsActivity(openSource);
     }
 }

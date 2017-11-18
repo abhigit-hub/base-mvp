@@ -15,13 +15,13 @@
         android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/ctl_blog_detail"
+            android:id="@+id/ctl_os_detail"
             android:layout_width="match_parent"
             android:layout_height="256dp"
             android:fitsSystemWindows="true"
+            app:collapsedTitleTextAppearance="@style/TextStyle.CollapsedAppBar"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:collapsedTitleTextAppearance="@style/TextStyle.CollapsedAppBar"
             app:titleEnabled="true">
 
             <ImageView
@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0.3"
-                android:background="@android:color/black"
+                android:background="@color/black"
                 android:fitsSystemWindows="true" />
 
             <android.support.v7.widget.Toolbar
@@ -48,7 +48,6 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
-
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -85,13 +84,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="start" />
 
-                <TextView
-                    android:id="@+id/tv_date"
-                    style="@style/TextStyle.Title.Sub"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end" />
-
             </RelativeLayout>
 
             <TextView
@@ -106,12 +98,12 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_blog"
+        android:id="@+id/fab_os"
+        style="@style/FabStyle"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:contentDescription="@string/open_in_browser"
         app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|right|end"
-        style="@style/FabStyle"/>
+        app:layout_anchorGravity="bottom|right|end" />
 
 </android.support.design.widget.CoordinatorLayout>

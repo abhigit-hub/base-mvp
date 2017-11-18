@@ -1,5 +1,6 @@
 package com.footinit.selfproject.ui.main.opensource;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.di.component.ActivityComponent;
 import com.footinit.selfproject.ui.base.BaseFragment;
 import com.footinit.selfproject.ui.base.MvpView;
+import com.footinit.selfproject.ui.main.opensourcedetails.OSDetailActivity;
 
 import java.util.List;
 
@@ -28,7 +30,9 @@ import butterknife.ButterKnife;
  */
 
 public class OpenSourceFragment extends BaseFragment
-        implements OpenSourceMvpView, OpenSourceAdapter.Callback {
+        implements OpenSourceMvpView {
+
+    public static final String KEY_PARCELABLE_OPEN_SOURCE = "KEY_PARCELABLE_OPEN_SOURCE";
 
     @Inject
     OpenSourceMvpPresenter<OpenSourceMvpView> presenter;
@@ -65,15 +69,10 @@ public class OpenSourceFragment extends BaseFragment
 
             presenter.onAttach(this);
 
-            openSourceAdapter.setCallback(this);
+            openSourceAdapter.setCallback((OpenSourcePresenter) presenter);
         }
 
         return view;
-    }
-
-    @Override
-    public void onOpenSourceEmptyRetryClicked() {
-
     }
 
     @Override
@@ -96,5 +95,17 @@ public class OpenSourceFragment extends BaseFragment
     @Override
     public void updateOpenSourceList(List<OpenSource> list) {
         openSourceAdapter.addItems(list);
+    }
+
+    @Override
+    public void onOpenSourceEmptyRetryClicked() {
+
+    }
+
+    @Override
+    public void openOSDetailsActivity(OpenSource openSource) {
+        Intent intent = OSDetailActivity.getStartIntent(getContext());
+        intent.putExtra(KEY_PARCELABLE_OPEN_SOURCE, openSource);
+        startActivity(intent);
     }
 }

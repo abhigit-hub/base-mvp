@@ -7,6 +7,7 @@ import com.footinit.selfproject.ui.main.MainActivity;
 import com.footinit.selfproject.ui.main.blog.BlogFragment;
 import com.footinit.selfproject.ui.main.blogdetails.BlogDetailsActivity;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceFragment;
+import com.footinit.selfproject.ui.main.opensourcedetails.OSDetailActivity;
 import com.footinit.selfproject.ui.splash.SplashActivity;
 
 import dagger.Component;
@@ -30,4 +31,6 @@ public interface ActivityComponent {
     void inject(OpenSourceFragment fragment);
 
     void inject(BlogDetailsActivity activity);
+
+    void inject(OSDetailActivity activity);
 }

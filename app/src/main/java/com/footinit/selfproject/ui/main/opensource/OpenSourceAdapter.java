@@ -81,6 +81,8 @@ public class OpenSourceAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     public interface Callback {
 
         void onOpenSourceEmptyRetryClicked();
+
+        void onOpenSourceItemClicked(OpenSource openSource);
     }
 
 
@@ -123,7 +125,8 @@ public class OpenSourceAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    if (openSource != null)
+                        callback.onOpenSourceItemClicked(openSource);
                 }
             });
         }
