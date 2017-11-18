@@ -28,4 +28,6 @@ public interface PreferenceHelper {
     void setCurrentUserLoggedInMode(DataManager.LoggedInMode mode);
 
     int getCurrentUserLoggedInMode();
+
+    void setCurrentUserLoggedOut();
 }

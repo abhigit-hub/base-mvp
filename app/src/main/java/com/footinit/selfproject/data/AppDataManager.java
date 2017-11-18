@@ -3,15 +3,20 @@ package com.footinit.selfproject.data;
 import android.content.Context;
 
 import com.footinit.selfproject.data.db.DbHelper;
+import com.footinit.selfproject.data.db.model.Blog;
+import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.data.db.model.User;
 import com.footinit.selfproject.data.network.ApiHelper;
 import com.footinit.selfproject.data.network.model.LoginRequest;
 import com.footinit.selfproject.data.pref.PreferenceHelper;
 import com.footinit.selfproject.di.ApplicationContext;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 /**
@@ -50,6 +55,11 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
+    public Completable wipeUserData() {
+        return dbHelper.wipeUserData();
+    }
+
+    @Override
     public Observable<User> doServerLoginApiCall(LoginRequest.ServerLoginRequest request) {
         return apiHelper.doServerLoginApiCall(request);
     }
@@ -62,6 +72,16 @@ public class AppDataManager implements DataManager {
     @Override
     public Observable<User> doFacebookLoginApiCall(LoginRequest.FacebookLoginRequest request) {
         return apiHelper.doFacebookLoginApiCall(request);
+    }
+
+    @Override
+    public Observable<List<Blog>> doBlogListApiCall() {
+        return apiHelper.doBlogListApiCall();
+    }
+
+    @Override
+    public Observable<List<OpenSource>> doOpenSourceListCall() {
+        return apiHelper.doOpenSourceListCall();
     }
 
     @Override
@@ -107,5 +127,10 @@ public class AppDataManager implements DataManager {
     @Override
     public int getCurrentUserLoggedInMode() {
         return preferenceHelper.getCurrentUserLoggedInMode();
+    }
+
+    @Override
+    public void setCurrentUserLoggedOut() {
+        preferenceHelper.setCurrentUserLoggedOut();
     }
 }

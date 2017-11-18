@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
+import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.AppDataManager;
 import com.footinit.selfproject.data.DataManager;
 import com.footinit.selfproject.data.db.AppDatabase;
@@ -23,6 +24,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
  * Created by Abhijit on 08-11-2017.
@@ -102,6 +104,15 @@ public class ApplicationModule {
                                     @DatabaseInfo String dbName) {
         return Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class,
                 dbName).build();
+    }
+
+    @Provides
+    @Singleton
+    CalligraphyConfig providesCalligraphyConfig() {
+        return new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/source-sans-pro/SourceSansPro-Light.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build();
     }
 
 }

@@ -8,6 +8,7 @@ import android.widget.EditText;
 
 import com.footinit.selfproject.R;
 import com.footinit.selfproject.ui.base.BaseActivity;
+import com.footinit.selfproject.ui.main.MainActivity;
 
 import javax.inject.Inject;
 
@@ -80,6 +81,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
     @Override
     public void openMainActivity() {
-        showMessage("openMainActivity");
+        startActivity(MainActivity.getStartIntent(this));
+        finish();
     }
 }

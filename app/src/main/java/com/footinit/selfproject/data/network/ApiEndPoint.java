@@ -21,10 +21,10 @@ public final class ApiEndPoint {
             "588d161c100000a9072d2946";
 
     public static final String ENDPOINT_OPEN_SOURCE = AppConstants.BASE_URL +
-            "5926ce9d11000096006ccb30";
+            "5a0ed84c3000001c33433763";
 
     public static final String ENDPOINT_BLOG = AppConstants.BASE_URL +
-            "5926c34212000035026871cd";
+            "5a0eda243000000a35433770";
 
     private ApiEndPoint() {
         //PC

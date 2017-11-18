@@ -1,10 +1,13 @@
 package com.footinit.selfproject.data.network;
 
 import com.footinit.selfproject.BuildConfig;
+import com.footinit.selfproject.data.db.model.Blog;
+import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.data.db.model.User;
 import com.footinit.selfproject.data.network.model.LoginRequest;
 import com.footinit.selfproject.utils.AppConstants;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -14,6 +17,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
@@ -30,6 +34,12 @@ public interface ApiCall {
 
     @POST(ApiEndPoint.ENDPOINT_FACEBOOK_LOGIN)
     Observable<User> doFacebookLogin(@Body LoginRequest.FacebookLoginRequest request);
+
+    @GET(ApiEndPoint.ENDPOINT_BLOG)
+    Observable<List<Blog>> getBlogList();
+
+    @GET(ApiEndPoint.ENDPOINT_OPEN_SOURCE)
+    Observable<List<OpenSource>> getOpenSourceList();
 
 
     class Factory {

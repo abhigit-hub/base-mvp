@@ -4,16 +4,33 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 
+import com.footinit.selfproject.data.db.model.Blog;
+import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.di.ActivityContext;
 import com.footinit.selfproject.di.PerActivity;
 import com.footinit.selfproject.ui.login.LoginMvpPresenter;
 import com.footinit.selfproject.ui.login.LoginMvpView;
 import com.footinit.selfproject.ui.login.LoginPresenter;
+import com.footinit.selfproject.ui.main.MainMvpPresenter;
+import com.footinit.selfproject.ui.main.MainMvpView;
+import com.footinit.selfproject.ui.main.MainPagerAdapter;
+import com.footinit.selfproject.ui.main.MainPresenter;
+import com.footinit.selfproject.ui.main.blog.BlogAdapter;
+import com.footinit.selfproject.ui.main.blog.BlogMvpPresenter;
+import com.footinit.selfproject.ui.main.blog.BlogMvpView;
+import com.footinit.selfproject.ui.main.blog.BlogPresenter;
+import com.footinit.selfproject.ui.main.opensource.OpenSourceAdapter;
+import com.footinit.selfproject.ui.main.opensource.OpenSourceMvpPresenter;
+import com.footinit.selfproject.ui.main.opensource.OpenSourceMvpView;
+import com.footinit.selfproject.ui.main.opensource.OpenSourcePresenter;
 import com.footinit.selfproject.ui.splash.SplashMvpPresenter;
 import com.footinit.selfproject.ui.splash.SplashMvpView;
 import com.footinit.selfproject.ui.splash.SplashPresenter;
 import com.footinit.selfproject.utils.rx.AppSchedulerProvider;
 import com.footinit.selfproject.utils.rx.SchedulerProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
@@ -68,5 +85,38 @@ public class ActivityModule {
     @PerActivity
     LoginMvpPresenter<LoginMvpView> provideLoginPresenter(LoginPresenter<LoginMvpView> presenter) {
         return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    MainMvpPresenter<MainMvpView> providesMainPresenter(MainPresenter<MainMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    BlogMvpPresenter<BlogMvpView> providesBlogPresenter(BlogPresenter<BlogMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    OpenSourceMvpPresenter<OpenSourceMvpView> providesOpenSourcePresenter(OpenSourcePresenter<OpenSourceMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
+    MainPagerAdapter providesMainPagerAdapter(AppCompatActivity activity) {
+        return new MainPagerAdapter(activity.getSupportFragmentManager());
+    }
+
+    @Provides
+    BlogAdapter providesBlogAdapter() {
+        return new BlogAdapter(new ArrayList<Blog>());
+    }
+
+    @Provides
+    OpenSourceAdapter providesOpenSourceAdapter() {
+        return new OpenSourceAdapter(new ArrayList<OpenSource>());
     }
 }

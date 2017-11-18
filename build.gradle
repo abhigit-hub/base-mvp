@@ -47,5 +47,5 @@ ext {
     retrofitVersion = '2.3.0'
     retrofit2Rxjava2AdapterVersion = '2.3.0'
     okHttpVersion = '3.9.0'
-    roomVersion = '1.0.0-alpha4'
+    roomVersion = '1.0.0-alpha7'
 }

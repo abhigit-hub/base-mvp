@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.functions.Action;
 
 /**
  * Created by Abhijit on 11-11-2017.
@@ -26,11 +27,31 @@ public class AppDbHelper implements DbHelper {
 
     @Override
     public Observable<Long> insertUser(final User user) {
-        return Observable.fromCallable(() -> appDatabase.userDao().insertUser(user));
+        return Observable.fromCallable(new Callable<Long>() {
+            @Override
+            public Long call() throws Exception {
+                return appDatabase.userDao().insertUser(user);
+            }
+        });
     }
 
     @Override
     public Observable<User> getCurrentUser() {
-        return Observable.fromCallable(() -> appDatabase.userDao().getUser());
+        return Observable.fromCallable(new Callable<User>() {
+            @Override
+            public User call() throws Exception {
+                return appDatabase.userDao().getUser();
+            }
+        });
+    }
+
+    @Override
+    public Completable wipeUserData() {
+        return Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                appDatabase.userDao().nukeUserTable();
+            }
+        });
     }
 }

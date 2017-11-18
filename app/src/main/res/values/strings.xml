@@ -11,4 +11,17 @@
     <string name="empty_email">Please provide a non empty email.</string>
     <string name="invalid_email">Please provide a valid email.</string>
     <string name="empty_password">Please provide a non empty password.</string>
+    <string name="base_mvp">Base-MVP</string>
+    <string name="feed">Feed</string>
+    <string name="logout">Logout</string>
+    <string name="cut">Cut</string>
+    <string name="version">version</string>
+    <string name="open_drawer">Open Drawer</string>
+    <string name="close_drawer">Close Drawer</string>
+    <string name="blog">Blog</string>
+    <string name="open_source">Open Source</string>
+
+    <string name="empty_screen">We do not have anything\nhere right now.</string>
+    <string name="please_retry">Please Retry</string>
+    <string name="retry">Retry</string>
 </resources>

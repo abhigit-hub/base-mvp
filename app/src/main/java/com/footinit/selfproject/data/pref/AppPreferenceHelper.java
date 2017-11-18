@@ -81,4 +81,13 @@ public class AppPreferenceHelper implements PreferenceHelper {
     public int getCurrentUserLoggedInMode() {
         return prefs.getInt(PREF_KEY_USER_LOGGED_IN_MODE, DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_OUT.getType());
     }
+
+    @Override
+    public void setCurrentUserLoggedOut() {
+        updateUserInfoInPrefs(
+                null,
+                null,
+                null,
+                DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_OUT);
+    }
 }

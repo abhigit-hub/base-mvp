@@ -1,7 +1,11 @@
 package com.footinit.selfproject.data.network;
 
+import com.footinit.selfproject.data.db.model.Blog;
+import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.data.db.model.User;
 import com.footinit.selfproject.data.network.model.LoginRequest;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -36,5 +40,15 @@ public class AppApiHelper implements ApiHelper{
     @Override
     public Observable<User> doFacebookLoginApiCall(LoginRequest.FacebookLoginRequest request) {
         return apiCall.doFacebookLogin(request);
+    }
+
+    @Override
+    public Observable<List<Blog>> doBlogListApiCall() {
+        return apiCall.getBlogList();
+    }
+
+    @Override
+    public Observable<List<OpenSource>> doOpenSourceListCall() {
+        return apiCall.getOpenSourceList();
     }
 }

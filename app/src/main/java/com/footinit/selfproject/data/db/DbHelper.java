@@ -14,4 +14,6 @@ public interface DbHelper {
     Observable<Long> insertUser(User user);
 
     Observable<User> getCurrentUser();
+
+    Completable wipeUserData();
 }
