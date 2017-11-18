@@ -75,7 +75,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         else return 1;
     }
 
-    public void addItems(List<Blog> list) {
+    void addItems(List<Blog> list) {
         this.blogList.addAll(list);
         notifyDataSetChanged();
     }
@@ -84,6 +84,8 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     public interface Callback {
 
         void onBlogEmptyRetryClicked();
+
+        void onBlogItemClicked(Blog blog);
     }
 
 
@@ -146,7 +148,8 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    if (blog != null)
+                        callback.onBlogItemClicked(blog);
                 }
             });
         }

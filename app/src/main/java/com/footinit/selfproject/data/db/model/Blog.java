@@ -1,5 +1,8 @@
 package com.footinit.selfproject.data.db.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Abhijit on 17-11-2017.
  */
 
-public class Blog {
+public class Blog implements Parcelable{
 
     @Expose
     @SerializedName("blog_url")
@@ -79,4 +82,40 @@ public class Blog {
     public void setDate(String date) {
         this.date = date;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(coverImgUrl);
+        parcel.writeString(blogUrl);
+        parcel.writeString(title);
+        parcel.writeString(author);
+        parcel.writeString(date);
+        parcel.writeString(description);
+    }
+
+    public static final Parcelable.Creator<Blog> CREATOR = new Creator<Blog>() {
+        @Override
+        public Blog createFromParcel(Parcel parcel) {
+            Blog blog = new Blog();
+
+            blog.coverImgUrl = parcel.readString();
+            blog.blogUrl = parcel.readString();
+            blog.title = parcel.readString();
+            blog.author = parcel.readString();
+            blog.date = parcel.readString();
+            blog.description = parcel.readString();
+
+            return blog;
+        }
+
+        @Override
+        public Blog[] newArray(int i) {
+            return new Blog[i];
+        }
+    };
 }

@@ -35,6 +35,16 @@ import butterknife.ButterKnife;
  * Created by Abhijit on 16-11-2017.
  */
 
+
+/*
+* TODO
+* 1. Login with Google(use email) Oauth
+* 2. Feed Activity
+* 3. Refresh Icon
+* 4. Pull to Refresh
+* 5. Item On click- BlogDetailsActivity
+* */
+
 public class MainActivity extends BaseActivity implements MainMvpView {
 
 

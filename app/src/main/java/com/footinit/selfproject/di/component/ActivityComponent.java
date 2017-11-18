@@ -5,6 +5,7 @@ import com.footinit.selfproject.di.module.ActivityModule;
 import com.footinit.selfproject.ui.login.LoginActivity;
 import com.footinit.selfproject.ui.main.MainActivity;
 import com.footinit.selfproject.ui.main.blog.BlogFragment;
+import com.footinit.selfproject.ui.main.blogdetails.BlogDetailsActivity;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceFragment;
 import com.footinit.selfproject.ui.splash.SplashActivity;
 
@@ -27,4 +28,6 @@ public interface ActivityComponent {
     void inject(BlogFragment fragment);
 
     void inject(OpenSourceFragment fragment);
+
+    void inject(BlogDetailsActivity activity);
 }

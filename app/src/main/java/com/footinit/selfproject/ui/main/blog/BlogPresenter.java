@@ -17,7 +17,7 @@ import io.reactivex.functions.Consumer;
  */
 
 public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
-        implements BlogMvpPresenter<V> {
+        implements BlogMvpPresenter<V>, BlogAdapter.Callback {
 
 
     @Inject
@@ -56,5 +56,15 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
                             }
                         })
         );
+    }
+
+    @Override
+    public void onBlogEmptyRetryClicked() {
+        getMvpView().onBlogEmptyRetryClicked();
+    }
+
+    @Override
+    public void onBlogItemClicked(Blog blog) {
+        getMvpView().openBlogDetailActivity(blog);
     }
 }

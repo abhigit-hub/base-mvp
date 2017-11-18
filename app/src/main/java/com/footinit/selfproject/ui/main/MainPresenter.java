@@ -59,32 +59,10 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
     * */
         getDataManager().setCurrentUserLoggedOut();
 
-
-
     /*
     * Clearing/Wiping all data from the User Table
     * And if successful, logs User out
     * */
-        /*getCompositeDisposable().add(
-                getDataManager().wipeUserData()
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<Void>() {
-                                       @Override
-                                       public void accept(Void v) throws Exception {
-                                           getMvpView().hideLoading();
-                                           getMvpView().showMessage("Logging you out");
-                                           getMvpView().openLoginActivity();
-                                       }
-                                   }, new Consumer<Throwable>() {
-                                       @Override
-                                       public void accept(Throwable throwable) throws Exception {
-                                           getMvpView().hideLoading();
-                                           getMvpView().showMessage("There was an error while logging you out");
-                                       }
-                                   }
-                        )
-        );*/
 
         getDataManager().wipeUserData()
                 .subscribeOn(getSchedulerProvider().io())

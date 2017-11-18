@@ -1,5 +1,6 @@
 package com.footinit.selfproject.ui.main.blog;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.footinit.selfproject.data.db.model.Blog;
 import com.footinit.selfproject.di.component.ActivityComponent;
 import com.footinit.selfproject.ui.base.BaseFragment;
 import com.footinit.selfproject.ui.base.MvpView;
+import com.footinit.selfproject.ui.main.blogdetails.BlogDetailsActivity;
 
 import java.util.List;
 
@@ -28,7 +30,9 @@ import butterknife.ButterKnife;
  */
 
 public class BlogFragment extends BaseFragment
-        implements BlogMvpView, BlogAdapter.Callback {
+        implements BlogMvpView {
+
+    public static final String KEY_PARCELABLE_BLOG = "BLOG_PARCELABLE_KEY";
 
     @Inject
     BlogMvpPresenter<BlogMvpView> presenter;
@@ -65,15 +69,10 @@ public class BlogFragment extends BaseFragment
 
             presenter.onAttach(this);
 
-            blogAdapter.setCallback(this);
+            blogAdapter.setCallback((BlogPresenter) presenter);
         }
 
         return view;
-    }
-
-    @Override
-    public void onBlogEmptyRetryClicked() {
-
     }
 
     @Override
@@ -90,6 +89,18 @@ public class BlogFragment extends BaseFragment
     @Override
     public void updateBlogList(List<Blog> blogList) {
         blogAdapter.addItems(blogList);
+    }
+
+    @Override
+    public void onBlogEmptyRetryClicked() {
+
+    }
+
+    @Override
+    public void openBlogDetailActivity(Blog blog) {
+        Intent intent = BlogDetailsActivity.getStartIntent(getContext());
+        intent.putExtra(KEY_PARCELABLE_BLOG, blog);
+        startActivity(intent);
     }
 
     @Override

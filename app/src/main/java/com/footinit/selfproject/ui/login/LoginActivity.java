@@ -44,8 +44,6 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
         getActivityComponent().inject(this);
 
-
-
         setUnBinder(ButterKnife.bind(this));
 
         presenter.onAttach(LoginActivity.this);
