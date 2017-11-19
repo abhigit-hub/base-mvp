@@ -28,7 +28,7 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
     }
 
     @Override
-    public void onViewPrepared() {
+    public void fetchBlogList() {
         getMvpView().showLoading();
 
         getCompositeDisposable().add(

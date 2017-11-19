@@ -10,5 +10,5 @@ import com.footinit.selfproject.ui.base.MvpPresenter;
 @PerActivity
 public interface BlogMvpPresenter<V extends BlogMvpView> extends MvpPresenter<V> {
 
-    void onViewPrepared();
+    void fetchBlogList();
 }

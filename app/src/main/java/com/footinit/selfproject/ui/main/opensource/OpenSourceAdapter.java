@@ -78,6 +78,12 @@ public class OpenSourceAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void updateListItems(List<OpenSource> openSourceList) {
+        this.openSourceList.clear();
+        this.openSourceList = openSourceList;
+        notifyDataSetChanged();
+    }
+
     public interface Callback {
 
         void onOpenSourceEmptyRetryClicked();

@@ -80,6 +80,12 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void updateListItems(List<Blog> blogList) {
+        this.blogList.clear();
+        this.blogList = blogList;
+        notifyDataSetChanged();
+    }
+
 
     public interface Callback {
 

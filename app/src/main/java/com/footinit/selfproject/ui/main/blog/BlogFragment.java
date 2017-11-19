@@ -15,7 +15,6 @@ import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.db.model.Blog;
 import com.footinit.selfproject.di.component.ActivityComponent;
 import com.footinit.selfproject.ui.base.BaseFragment;
-import com.footinit.selfproject.ui.base.MvpView;
 import com.footinit.selfproject.ui.main.blogdetails.BlogDetailsActivity;
 
 import java.util.List;
@@ -83,7 +82,7 @@ public class BlogFragment extends BaseFragment
         rvBlog.setItemAnimator(new DefaultItemAnimator());
         rvBlog.setAdapter(blogAdapter);
 
-        presenter.onViewPrepared();
+        presenter.fetchBlogList();
     }
 
     @Override
@@ -93,7 +92,7 @@ public class BlogFragment extends BaseFragment
 
     @Override
     public void onBlogEmptyRetryClicked() {
-
+        presenter.fetchBlogList();
     }
 
     @Override

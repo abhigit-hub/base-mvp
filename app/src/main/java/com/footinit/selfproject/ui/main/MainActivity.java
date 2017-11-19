@@ -12,6 +12,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -22,9 +23,15 @@ import android.widget.TextView;
 
 import com.footinit.selfproject.BuildConfig;
 import com.footinit.selfproject.R;
+import com.footinit.selfproject.data.db.model.Blog;
+import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BaseActivity;
 import com.footinit.selfproject.ui.custom.RoundedImageView;
 import com.footinit.selfproject.ui.login.LoginActivity;
+import com.footinit.selfproject.ui.main.blog.BlogAdapter;
+import com.footinit.selfproject.ui.main.opensource.OpenSourceAdapter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -42,8 +49,7 @@ import butterknife.ButterKnife;
 * 2. Feed Activity
 * 3. Refresh Icon
 * 4. Pull to Refresh
-* 5. Item On click- BlogDetailsActivity
-* 6. Retry Button
+* 7. Rabbit
 * */
 
 public class MainActivity extends BaseActivity implements MainMvpView {
@@ -53,7 +59,15 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     MainMvpPresenter<MainMvpView> presenter;
 
     @Inject
-    MainPagerAdapter adapter;
+    MainPagerAdapter pagerAdapter;
+
+    @Inject
+    BlogAdapter blogAdapter;
+
+    @Inject
+    OpenSourceAdapter openSourceAdapter;
+
+
 
     @BindView(R.id.tv_app_version)
     TextView tvAppVersion;
@@ -68,17 +82,19 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     DrawerLayout drawerLayout;
 
     @BindView(R.id.main_view_pager)
-    ViewPager pager;
+    ViewPager viewPager;
 
     @BindView(R.id.main_tab_layout)
     TabLayout tabLayout;
+
+    @BindView(R.id.swipe_to_refresh)
+    SwipeRefreshLayout refreshLayout;
 
     private TextView tvUserName, tvUserEmail;
 
     private RoundedImageView ivProfilePic;
 
     ActionBarDrawerToggle drawerToggle;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -147,6 +163,33 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     }
 
     @Override
+    public void updateSwipeRefreshLayout(boolean isVisible) {
+        refreshLayout.setRefreshing(isVisible);
+    }
+
+    @Override
+    public void updateBlogAdapter(List<Blog> blogList) {
+        if (blogList != null) {
+            blogAdapter.updateListItems(blogList);
+        }
+    }
+
+    @Override
+    public void updateOpenSourceAdapter(List<OpenSource> openSourceList) {
+        if (openSourceList != null) {
+            openSourceAdapter.updateListItems(openSourceList);
+        }
+    }
+
+    @Override
+    public void resetAllAdapterPositions() {
+        viewPager.setCurrentItem(0);
+
+        //TODO
+        //Scroll both recycler views to top of the screen
+    }
+
+    @Override
     protected void setUp() {
         setSupportActionBar(toolbar);
 
@@ -174,24 +217,31 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         setUpNavMenu();
         presenter.onNavMenuCreated();
         setUpViewPager();
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.onRefreshNetworkCall();
+            }
+        });
     }
 
     private void setUpViewPager() {
-        adapter.setCount(2);
+        pagerAdapter.setCount(2);
 
-        pager.setAdapter(adapter);
+        viewPager.setAdapter(pagerAdapter);
 
         tabLayout.addTab(tabLayout.newTab().setText(R.string.blog));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.open_source));
 
-        pager.setOffscreenPageLimit(tabLayout.getTabCount());
+        viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
 
-        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                pager.setCurrentItem(tab.getPosition());
+                viewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override

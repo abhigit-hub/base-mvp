@@ -1,9 +1,13 @@
 package com.footinit.selfproject.ui.main;
 
 import com.footinit.selfproject.data.DataManager;
+import com.footinit.selfproject.data.db.model.Blog;
+import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BasePresenter;
 import com.footinit.selfproject.ui.base.MvpPresenter;
 import com.footinit.selfproject.utils.rx.SchedulerProvider;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -91,5 +95,70 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
     @Override
     public void onViewInitialized() {
 
+    }
+
+    @Override
+    public void onRefreshNetworkCall() {
+        getMvpView().updateSwipeRefreshLayout(true);
+
+        getCompositeDisposable().add(
+                getDataManager().doBlogListApiCall()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<List<Blog>>() {
+                    @Override
+                    public void accept(List<Blog> blogList) throws Exception {
+                        if (!isViewAttached())
+                            return;
+
+                        if (blogList != null) {
+                            getMvpView().updateBlogAdapter(blogList);
+                        }
+                        onOpenSourceNetworkCall();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (!isViewAttached())
+                            return;
+
+                        getMvpView().updateSwipeRefreshLayout(false);
+                        getMvpView().onError("Could not fetch items");
+                    }
+                })
+        );
+    }
+
+    private void onOpenSourceNetworkCall() {
+        getMvpView().updateSwipeRefreshLayout(true);
+
+        getCompositeDisposable().add(
+                getDataManager().doOpenSourceListCall()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<List<OpenSource>>() {
+                    @Override
+                    public void accept(List<OpenSource> list) throws Exception {
+                        if (!isViewAttached())
+                            return;
+
+                        getMvpView().updateSwipeRefreshLayout(false);
+                        if (list != null) {
+                            getMvpView().updateOpenSourceAdapter(list);
+                        }
+                        getMvpView().showMessage("Updated items");
+                        getMvpView().resetAllAdapterPositions();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (!isViewAttached())
+                            return;
+
+                        getMvpView().updateSwipeRefreshLayout(false);
+                        getMvpView().onError("Could not fetch items");
+                    }
+                })
+        );
     }
 }
