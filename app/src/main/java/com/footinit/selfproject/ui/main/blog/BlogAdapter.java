@@ -82,7 +82,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     public void updateListItems(List<Blog> blogList) {
         this.blogList.clear();
-        this.blogList = blogList;
+        this.blogList.addAll(blogList);
         notifyDataSetChanged();
     }
 
@@ -154,7 +154,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (blog != null)
+                    if (blog != null && callback != null)
                         callback.onBlogItemClicked(blog);
                 }
             });

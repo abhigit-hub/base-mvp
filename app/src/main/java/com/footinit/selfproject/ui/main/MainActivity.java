@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -29,8 +30,11 @@ import com.footinit.selfproject.ui.base.BaseActivity;
 import com.footinit.selfproject.ui.custom.RoundedImageView;
 import com.footinit.selfproject.ui.login.LoginActivity;
 import com.footinit.selfproject.ui.main.blog.BlogAdapter;
+import com.footinit.selfproject.ui.main.blog.BlogFragment;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceAdapter;
+import com.footinit.selfproject.ui.main.opensource.OpenSourceFragment;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,10 +50,12 @@ import butterknife.ButterKnife;
 /*
 * TODO
 * 1. Login with Google(use email) Oauth
-* 2. Feed Activity
+* 2. Feed Activity (Hetro Items)
 * 3. Refresh Icon
 * 4. Pull to Refresh
 * 7. Rabbit
+* 8. Settings
+* 9. Internet Check
 * */
 
 public class MainActivity extends BaseActivity implements MainMvpView {
@@ -184,9 +190,19 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @Override
     public void resetAllAdapterPositions() {
         viewPager.setCurrentItem(0);
+        for (int i = 0; i < viewPager.getChildCount(); i++) {
+            WeakReference<Fragment> fragment = pagerAdapter.getRegisteredFragments().get(i);
 
-        //TODO
-        //Scroll both recycler views to top of the screen
+            if (fragment != null) {
+                if (fragment.get() instanceof BlogFragment) {
+                    ((BlogFragment) fragment.get()).setListScrollTop();
+                } else if (fragment.get() instanceof OpenSourceFragment) {
+                    ((OpenSourceFragment) fragment.get()).setListScrollTop();
+                }
+            }
+
+            fragment = null;
+        }
     }
 
     @Override

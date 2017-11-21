@@ -95,6 +95,10 @@ public class BlogFragment extends BaseFragment
         presenter.fetchBlogList();
     }
 
+    public void setListScrollTop() {
+        linearLayoutManager.scrollToPositionWithOffset(0,0);
+    }
+
     @Override
     public void openBlogDetailActivity(Blog blog) {
         Intent intent = BlogDetailsActivity.getStartIntent(getContext());
@@ -105,6 +109,7 @@ public class BlogFragment extends BaseFragment
     @Override
     public void onDestroyView() {
         presenter.onDetach();
+        blogAdapter.setCallback(null);
         super.onDestroyView();
     }
 }

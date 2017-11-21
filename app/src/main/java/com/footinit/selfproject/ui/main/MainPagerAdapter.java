@@ -3,9 +3,13 @@ package com.footinit.selfproject.ui.main;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.SparseArray;
+import android.view.ViewGroup;
 
 import com.footinit.selfproject.ui.main.blog.BlogFragment;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceFragment;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Abhijit on 17-11-2017.
@@ -14,6 +18,8 @@ import com.footinit.selfproject.ui.main.opensource.OpenSourceFragment;
 public class MainPagerAdapter extends FragmentStatePagerAdapter {
 
     private int tabCount;
+    private SparseArray<WeakReference<Fragment>> registeredFragments =
+            new SparseArray<>();
 
     public MainPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -25,14 +31,25 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                //
                 return BlogFragment.newInstance();
             case 1:
-                //
                 return OpenSourceFragment.newInstance();
             default:
                 return null;
         }
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Fragment fragment = (Fragment) super.instantiateItem(container, position);
+        registeredFragments.put(position, new WeakReference<Fragment>(fragment));
+        return fragment;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        registeredFragments.remove(position);
+        super.destroyItem(container, position, object);
     }
 
     @Override
@@ -42,5 +59,9 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
 
     public void setCount(int tabCount) {
         this.tabCount = tabCount;
+    }
+
+    public SparseArray<WeakReference<Fragment>> getRegisteredFragments() {
+        return registeredFragments;
     }
 }

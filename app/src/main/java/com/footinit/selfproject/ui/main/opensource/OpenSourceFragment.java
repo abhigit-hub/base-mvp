@@ -90,6 +90,7 @@ public class OpenSourceFragment extends BaseFragment
     @Override
     public void onDestroyView() {
         presenter.onDetach();
+        openSourceAdapter.setCallback(null);
         super.onDestroyView();
     }
 
@@ -108,5 +109,9 @@ public class OpenSourceFragment extends BaseFragment
         Intent intent = OSDetailActivity.getStartIntent(getContext());
         intent.putExtra(KEY_PARCELABLE_OPEN_SOURCE, openSource);
         startActivity(intent);
+    }
+
+    public void setListScrollTop() {
+        linearLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 }

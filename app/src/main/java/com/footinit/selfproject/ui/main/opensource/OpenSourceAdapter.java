@@ -80,7 +80,7 @@ public class OpenSourceAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     public void updateListItems(List<OpenSource> openSourceList) {
         this.openSourceList.clear();
-        this.openSourceList = openSourceList;
+        this.openSourceList.addAll(openSourceList);
         notifyDataSetChanged();
     }
 
@@ -131,7 +131,7 @@ public class OpenSourceAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (openSource != null)
+                    if (openSource != null && callback != null)
                         callback.onOpenSourceItemClicked(openSource);
                 }
             });
