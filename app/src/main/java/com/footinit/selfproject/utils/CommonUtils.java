@@ -55,4 +55,8 @@ public final class CommonUtils {
     public static String getTimeStamp() {
         return new SimpleDateFormat(AppConstants.TIMESTAMP, Locale.US).format(new Date());
     }
+
+    public static Long getNegativeLong(int number) {
+        return ( - (long) number);
+    }
 }

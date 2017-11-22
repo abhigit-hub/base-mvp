@@ -2,6 +2,7 @@ package com.footinit.selfproject;
 
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
 import com.footinit.selfproject.di.component.ApplicationComponent;
 import com.footinit.selfproject.di.component.DaggerApplicationComponent;
 import com.footinit.selfproject.di.module.ApplicationModule;
@@ -32,6 +33,11 @@ public class MvpApp extends Application {
                 .build();
 
         AppLogger.init();
+
+        /*
+        * Init Facebook SDK*/
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
 
         CalligraphyConfig.initDefault(calligraphyConfig);
     }

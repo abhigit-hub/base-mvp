@@ -27,6 +27,7 @@ import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.db.model.Blog;
 import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BaseActivity;
+import com.footinit.selfproject.ui.custom.CustomSwipeToRefresh;
 import com.footinit.selfproject.ui.custom.RoundedImageView;
 import com.footinit.selfproject.ui.login.LoginActivity;
 import com.footinit.selfproject.ui.main.blog.BlogAdapter;
@@ -52,10 +53,9 @@ import butterknife.ButterKnife;
 * 1. Login with Google(use email) Oauth
 * 2. Feed Activity (Hetro Items)
 * 3. Refresh Icon
-* 4. Pull to Refresh
 * 7. Rabbit
 * 8. Settings
-* 9. Internet Check
+* 9. Internet Check and show message. Put message inside the framework
 * */
 
 public class MainActivity extends BaseActivity implements MainMvpView {
@@ -94,7 +94,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     TabLayout tabLayout;
 
     @BindView(R.id.swipe_to_refresh)
-    SwipeRefreshLayout refreshLayout;
+    CustomSwipeToRefresh refreshLayout;
 
     private TextView tvUserName, tvUserEmail;
 

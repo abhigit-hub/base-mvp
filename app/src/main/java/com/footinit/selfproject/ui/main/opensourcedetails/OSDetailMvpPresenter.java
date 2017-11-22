@@ -1,6 +1,5 @@
 package com.footinit.selfproject.ui.main.opensourcedetails;
 
-import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.di.PerActivity;
 import com.footinit.selfproject.ui.base.MvpPresenter;
 

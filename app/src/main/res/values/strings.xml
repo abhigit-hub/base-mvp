@@ -27,4 +27,10 @@
     <string name="blog_details">Blog Details</string>
     <string name="open_in_browser">Open in Browser</string>
     <string name="open_source_details">Open Source Details</string>
+
+
+
+    //Facebook Strings
+    <string name="facebook_app_id">373267699785504</string>
+    <string name="fb_login_protocol_scheme">fb373267699785504</string>
 </resources>

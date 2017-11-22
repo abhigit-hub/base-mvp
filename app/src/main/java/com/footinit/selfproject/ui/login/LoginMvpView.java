@@ -9,4 +9,6 @@ import com.footinit.selfproject.ui.base.MvpView;
 public interface LoginMvpView extends MvpView {
 
     void openMainActivity();
+
+    void openGoogleSignInActivity();
 }

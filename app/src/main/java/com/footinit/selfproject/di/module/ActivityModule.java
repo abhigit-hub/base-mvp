@@ -36,7 +36,6 @@ import com.footinit.selfproject.utils.rx.AppSchedulerProvider;
 import com.footinit.selfproject.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;

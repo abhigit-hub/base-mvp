@@ -1,17 +1,16 @@
 package com.footinit.selfproject.ui.main;
 
+import com.facebook.login.LoginManager;
 import com.footinit.selfproject.data.DataManager;
 import com.footinit.selfproject.data.db.model.Blog;
 import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BasePresenter;
-import com.footinit.selfproject.ui.base.MvpPresenter;
 import com.footinit.selfproject.utils.rx.SchedulerProvider;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -57,6 +56,11 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
     @Override
     public void onDrawerOptionLogoutClicked() {
         getMvpView().showLoading();
+
+    /*
+    * Logout from the Facebook's LoginManager Instance */
+        LoginManager.getInstance().logOut();
+
 
     /*
     * Clearing Shared Preferences

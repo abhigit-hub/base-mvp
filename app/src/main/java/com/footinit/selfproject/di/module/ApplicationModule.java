@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
+import com.facebook.CallbackManager;
 import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.AppDataManager;
 import com.footinit.selfproject.data.DataManager;
@@ -19,6 +20,9 @@ import com.footinit.selfproject.di.ApplicationContext;
 import com.footinit.selfproject.di.DatabaseInfo;
 import com.footinit.selfproject.di.PreferenceInfo;
 import com.footinit.selfproject.utils.AppConstants;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import javax.inject.Singleton;
 
@@ -115,4 +119,24 @@ public class ApplicationModule {
                 .build();
     }
 
+    @Provides
+    @Singleton
+    GoogleSignInOptions providesGoogleSignInOptions() {
+        return new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    GoogleSignInClient providesGoogleSignInClient(GoogleSignInOptions googleSignInOptions,
+                                                  @ApplicationContext Context context) {
+        return GoogleSignIn.getClient(context, googleSignInOptions);
+    }
+
+    @Provides
+    @Singleton
+    CallbackManager providesCallbackManager() {
+        return CallbackManager.Factory.create();
+    }
 }

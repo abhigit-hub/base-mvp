@@ -1,7 +1,6 @@
 package com.footinit.selfproject.ui.main.opensourcedetails;
 
 import com.footinit.selfproject.data.DataManager;
-import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BasePresenter;
 import com.footinit.selfproject.utils.rx.SchedulerProvider;
 

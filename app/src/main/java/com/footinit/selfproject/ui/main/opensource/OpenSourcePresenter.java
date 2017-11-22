@@ -3,7 +3,6 @@ package com.footinit.selfproject.ui.main.opensource;
 import com.footinit.selfproject.data.DataManager;
 import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BasePresenter;
-import com.footinit.selfproject.ui.base.MvpPresenter;
 import com.footinit.selfproject.utils.rx.SchedulerProvider;
 
 import java.util.List;

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +15,6 @@ import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.di.component.ActivityComponent;
 import com.footinit.selfproject.ui.base.BaseFragment;
-import com.footinit.selfproject.ui.base.MvpView;
 import com.footinit.selfproject.ui.main.opensourcedetails.OSDetailActivity;
 
 import java.util.List;

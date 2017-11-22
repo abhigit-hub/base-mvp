@@ -26,6 +26,11 @@ public class User {
 
     * */
 
+    public User(long userID, String userName, String email) {
+        this.userID = userID;
+        this.userName = userName;
+        this.email = email;
+    }
 
     @Ignore
     @Expose @SerializedName("status_code")

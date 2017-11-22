@@ -1,5 +1,13 @@
 package com.footinit.selfproject.ui.login;
 
+import android.os.Bundle;
+
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.login.LoginResult;
 import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.DataManager;
 import com.footinit.selfproject.data.db.model.User;
@@ -7,11 +15,17 @@ import com.footinit.selfproject.data.network.model.LoginRequest;
 import com.footinit.selfproject.ui.base.BasePresenter;
 import com.footinit.selfproject.utils.CommonUtils;
 import com.footinit.selfproject.utils.rx.SchedulerProvider;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
+import org.json.JSONObject;
 
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
+import timber.log.Timber;
 
 /**
  * Created by Abhijit on 09-11-2017.
@@ -32,6 +46,13 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
         super.onAttach(mvpView);
     }
 
+
+    /*
+    *
+    * Login from Google and Facebook has negative id's for identification, Server has positive ID's
+    *
+    * Based on the ID's, we can deduce the form of Login
+    * */
     @Override
     public void onServerLoginClicked(String email, String password) {
         if (email == null || email.isEmpty()) {
@@ -83,74 +104,92 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
 
     @Override
     public void onGoogleLoginClicked() {
-        getMvpView().showLoading();
-
-        getCompositeDisposable().add(
-                getDataManager().doGoogleLoginApiCall(new LoginRequest.GoogleLoginRequest("test1", "test1"))
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<User>() {
-                            @Override
-                            public void accept(User user) throws Exception {
-                                insertCurrentUserIntoDb(user);
-                                getDataManager().updateUserInfoInPrefs(user.getUserID(),
-                                        user.getUserName(),
-                                        user.getEmail(),
-                                        DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_GOOGLE);
-
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().showMessage("Signing in with Google");
-                                getMvpView().hideLoading();
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().hideLoading();
-                                getMvpView().onError("Google Sign In Failed");
-                            }
-                        })
-        );
+        getMvpView().openGoogleSignInActivity();
     }
 
     @Override
-    public void onFacebookLoginClicked() {
-        getMvpView().showLoading();
+    public void onGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            onGoogleLoginSuccessful(account);
+        } catch (ApiException e) {
+            e.printStackTrace();
+            Timber.d("signInResult:failed code=" + e.getStatusCode());
+            getMvpView().onError("Google Sign in Failed");
+        }
+    }
 
-        getCompositeDisposable().add(
-                getDataManager().doFacebookLoginApiCall(new LoginRequest.FacebookLoginRequest("test3", "test4"))
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<User>() {
-                            @Override
-                            public void accept(User user) throws Exception {
-                                insertCurrentUserIntoDb(user);
-                                getDataManager().updateUserInfoInPrefs(user.getUserID(),
-                                        user.getUserName(),
-                                        user.getEmail(),
-                                        DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB);
 
-                                if (!isViewAttached())
-                                    return;
+    /*
+    *  Uses AccessToken to make another request to Facebook's Graph API
+    *  in order to retrieve User's email id
+    * */
+    @Override
+    public void onFacebookSignInResult(AccessToken accessToken, final Profile currentProfile) {
 
-                                getMvpView().hideLoading();
-                                getMvpView().showMessage("Signing in with Facebook");
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!isViewAttached())
-                                    return;
+        GraphRequest request = GraphRequest.newMeRequest(accessToken,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        onFacebookLoginSuccessful(currentProfile, object);
+                    }
+                });
 
-                                getMvpView().hideLoading();
-                                getMvpView().showMessage("Facebook Sign In Failed");
-                            }
-                        })
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,email,gender,birthday");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+
+    /*
+    *
+    * Login from Google and Facebook has negative id's for identification, Server has positive ID's
+    *
+    * Based on the ID's, we can deduce the form of Login
+    * */
+    private void onGoogleLoginSuccessful(GoogleSignInAccount account) {
+        getMvpView().showMessage("Google Sign in Successful");
+
+        insertCurrentUserIntoDb(
+                new User(
+                        (CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_GOOGLE.getType())),
+                        account.getDisplayName(),
+                        account.getEmail())
         );
+
+        getDataManager().updateUserInfoInPrefs(
+                CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_GOOGLE.getType()),
+                account.getDisplayName(),
+                account.getEmail(),
+                DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_GOOGLE);
+    }
+
+
+    /*
+    *
+    * Login from Google and Facebook has negative id's for identification, Server has positive ID's
+    *
+    * Based on the ID's, we can deduce the form of Login
+    * */
+    private void onFacebookLoginSuccessful(Profile profile, JSONObject object) {
+        getMvpView().showMessage("Facebook Sign in Successful");
+
+        String email = object.optString("email");
+        if (email == null) email = " ";
+
+        insertCurrentUserIntoDb(
+                new User(
+                        (CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB.getType())),
+                        profile.getName(),
+                        email)
+        );
+
+        getDataManager().updateUserInfoInPrefs(
+                CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB.getType()),
+                profile.getName(),
+                email,
+                DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB);
     }
 
     private void insertCurrentUserIntoDb(User user) {
@@ -176,7 +215,7 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
                                     return;
 
                                 getMvpView().hideLoading();
-                                getMvpView().onError("Error: Cannot initiate login");
+                                getMvpView().onError("Error: Cannot initiate Sign in");
                             }
                         })
         );
