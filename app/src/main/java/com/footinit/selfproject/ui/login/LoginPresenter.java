@@ -55,56 +55,59 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
     * */
     @Override
     public void onServerLoginClicked(String email, String password) {
-        if (email == null || email.isEmpty()) {
-            getMvpView().onError(R.string.empty_email);
-            return;
+        if (getMvpView().isNetworkConnected()) {
+            if (email == null || email.isEmpty()) {
+                getMvpView().onError(R.string.empty_email);
+                return;
+            }
+            if (!CommonUtils.isEmailValid(email)) {
+                getMvpView().onError(R.string.invalid_email);
+                return;
+            }
+            if (password == null || password.isEmpty()) {
+                getMvpView().onError(R.string.empty_password);
+                return;
+            }
+
+
+            getMvpView().showLoading();
+            getCompositeDisposable().add(
+                    getDataManager().doServerLoginApiCall(new LoginRequest.ServerLoginRequest(email, password))
+                            .subscribeOn(getSchedulerProvider().io())
+                            .observeOn(getSchedulerProvider().ui())
+                            .subscribe(new Consumer<User>() {
+                                @Override
+                                public void accept(User user) throws Exception {
+                                    insertCurrentUserIntoDb(user);
+                                    getDataManager().updateUserInfoInPrefs(user.getUserID(),
+                                            user.getUserName(),
+                                            user.getEmail(),
+                                            DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_SERVER);
+
+                                    if (!isViewAttached())
+                                        return;
+
+                                    getMvpView().hideLoading();
+                                    getMvpView().showMessage("Signing in");
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                    if (!isViewAttached())
+                                        return;
+
+                                    getMvpView().hideLoading();
+                                    getMvpView().onError("Server Sign In Failed");
+                                }
+                            })
+            );
         }
-        if (!CommonUtils.isEmailValid(email)) {
-            getMvpView().onError(R.string.invalid_email);
-            return;
-        }
-        if (password == null || password.isEmpty()) {
-            getMvpView().onError(R.string.empty_password);
-            return;
-        }
-
-        getMvpView().showLoading();
-
-        getCompositeDisposable().add(
-                getDataManager().doServerLoginApiCall(new LoginRequest.ServerLoginRequest(email, password))
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<User>() {
-                            @Override
-                            public void accept(User user) throws Exception {
-                                insertCurrentUserIntoDb(user);
-                                getDataManager().updateUserInfoInPrefs(user.getUserID(),
-                                        user.getUserName(),
-                                        user.getEmail(),
-                                        DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_SERVER);
-
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().hideLoading();
-                                getMvpView().showMessage("Signing in");
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().hideLoading();
-                                getMvpView().onError("Server Sign In Failed");
-                            }
-                        })
-        );
     }
 
     @Override
     public void onGoogleLoginClicked() {
-        getMvpView().openGoogleSignInActivity();
+        if (getMvpView().isNetworkConnected())
+            getMvpView().openGoogleSignInActivity();
     }
 
     @Override
@@ -127,18 +130,20 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
     @Override
     public void onFacebookSignInResult(AccessToken accessToken, final Profile currentProfile) {
 
-        GraphRequest request = GraphRequest.newMeRequest(accessToken,
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        onFacebookLoginSuccessful(currentProfile, object);
-                    }
-                });
+        if (getMvpView().isNetworkConnected()) {
+            GraphRequest request = GraphRequest.newMeRequest(accessToken,
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            onFacebookLoginSuccessful(currentProfile, object);
+                        }
+                    });
 
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,email,gender,birthday");
-        request.setParameters(parameters);
-        request.executeAsync();
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,gender,birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
     }
 
 

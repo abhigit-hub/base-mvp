@@ -29,38 +29,40 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
 
     @Override
     public void fetchBlogList() {
-        getMvpView().showLoading();
+        if (getMvpView().isNetworkConnected()) {
+            getMvpView().showLoading();
+            getCompositeDisposable().add(
+                    getDataManager().doBlogListApiCall()
+                            .subscribeOn(getSchedulerProvider().io())
+                            .observeOn(getSchedulerProvider().ui())
+                            .subscribe(new Consumer<List<Blog>>() {
+                                @Override
+                                public void accept(List<Blog> blogList) throws Exception {
+                                    if (!isViewAttached())
+                                        return;
 
-        getCompositeDisposable().add(
-                getDataManager().doBlogListApiCall()
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<List<Blog>>() {
-                            @Override
-                            public void accept(List<Blog> blogList) throws Exception {
-                                if (!isViewAttached())
-                                    return;
+                                    getMvpView().hideLoading();
+                                    if (blogList != null)
+                                        getMvpView().updateBlogList(blogList);
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                    if (!isViewAttached())
+                                        return;
 
-                                getMvpView().hideLoading();
-                                if (blogList != null)
-                                    getMvpView().updateBlogList(blogList);
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().hideLoading();
-                                getMvpView().onError("Could not fetch items");
-                            }
-                        })
-        );
+                                    getMvpView().hideLoading();
+                                    getMvpView().onError("Could not fetch items");
+                                }
+                            })
+            );
+        }
     }
 
     @Override
     public void onBlogEmptyRetryClicked() {
-        getMvpView().onBlogEmptyRetryClicked();
+        fetchBlogList();
+        getMvpView().onBlogListReFetched();
     }
 
     @Override

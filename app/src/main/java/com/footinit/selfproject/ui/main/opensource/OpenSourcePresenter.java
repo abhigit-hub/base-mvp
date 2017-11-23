@@ -28,40 +28,42 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
     }
 
     @Override
-    public void onViewPrepared() {
-        getMvpView().showLoading();
+    public void fetchOpenSourceList() {
+        if (getMvpView().isNetworkConnected()) {
+            getMvpView().showLoading();
+            getCompositeDisposable().add(
+                    getDataManager().doOpenSourceListCall()
+                            .subscribeOn(getSchedulerProvider().io())
+                            .observeOn(getSchedulerProvider().ui())
+                            .subscribe(new Consumer<List<OpenSource>>() {
+                                @Override
+                                public void accept(List<OpenSource> list) throws Exception {
+                                    if (!isViewAttached())
+                                        return;
 
-        getCompositeDisposable().add(
-                getDataManager().doOpenSourceListCall()
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<List<OpenSource>>() {
-                            @Override
-                            public void accept(List<OpenSource> list) throws Exception {
-                                if (!isViewAttached())
-                                    return;
+                                    if (list != null)
+                                        getMvpView().updateOpenSourceList(list);
 
-                                if (list != null)
-                                    getMvpView().updateOpenSourceList(list);
+                                    getMvpView().hideLoading();
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                    if (!isViewAttached())
+                                        return;
 
-                                getMvpView().hideLoading();
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().hideLoading();
-                                getMvpView().onError("Could not fetch items");
-                            }
-                        })
-        );
+                                    getMvpView().hideLoading();
+                                    getMvpView().onError("Could not fetch items");
+                                }
+                            })
+            );
+        }
     }
 
     @Override
     public void onOpenSourceEmptyRetryClicked() {
-        getMvpView().onOpenSourceEmptyRetryClicked();
+        fetchOpenSourceList();
+        getMvpView().onOpenSourceListReFetched();
     }
 
     @Override

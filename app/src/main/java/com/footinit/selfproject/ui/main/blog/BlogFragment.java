@@ -15,6 +15,7 @@ import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.db.model.Blog;
 import com.footinit.selfproject.di.component.ActivityComponent;
 import com.footinit.selfproject.ui.base.BaseFragment;
+import com.footinit.selfproject.ui.main.Interactor;
 import com.footinit.selfproject.ui.main.blogdetails.BlogDetailsActivity;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public class BlogFragment extends BaseFragment
         implements BlogMvpView {
 
     public static final String KEY_PARCELABLE_BLOG = "BLOG_PARCELABLE_KEY";
+
+    private Interactor.Blog callback;
 
     @Inject
     BlogMvpPresenter<BlogMvpView> presenter;
@@ -53,6 +56,10 @@ public class BlogFragment extends BaseFragment
         return fragment;
     }
 
+    public void setParentCallBack(Interactor.Blog callback) {
+        this.callback = callback;
+        this.callback.onBlogCallBackAdded();
+    }
 
     @Nullable
     @Override
@@ -90,13 +97,12 @@ public class BlogFragment extends BaseFragment
         blogAdapter.addItems(blogList);
     }
 
-    @Override
-    public void onBlogEmptyRetryClicked() {
-        presenter.fetchBlogList();
+    public void setListScrollTop() {
+        linearLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 
-    public void setListScrollTop() {
-        linearLayoutManager.scrollToPositionWithOffset(0,0);
+    public void onParentCallToFetchList() {
+        presenter.fetchBlogList();
     }
 
     @Override
@@ -107,9 +113,19 @@ public class BlogFragment extends BaseFragment
     }
 
     @Override
+    public void onBlogListReFetched() {
+        if (callback != null)
+            callback.onBlogListReFetched();
+    }
+
+    @Override
     public void onDestroyView() {
         presenter.onDetach();
         blogAdapter.setCallback(null);
+        if (callback != null) {
+            callback.onBlogCallBackRemoved();
+            callback = null;
+        }
         super.onDestroyView();
     }
 }

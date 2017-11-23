@@ -10,5 +10,5 @@ import com.footinit.selfproject.ui.base.MvpPresenter;
 @PerActivity
 public interface OpenSourceMvpPresenter<V extends OpenSourceMvpView> extends MvpPresenter<V> {
 
-    void onViewPrepared();
+    void fetchOpenSourceList();
 }

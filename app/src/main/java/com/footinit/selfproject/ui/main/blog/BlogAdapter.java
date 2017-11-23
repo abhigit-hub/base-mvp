@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.db.model.Blog;
+import com.footinit.selfproject.di.PerActivity;
 import com.footinit.selfproject.ui.base.BaseViewHolder;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import butterknife.OnClick;
  * Created by Abhijit on 17-11-2017.
  */
 
+@PerActivity
 public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private static final int VIEW_TYPE_NORMAL = 0;
@@ -75,11 +77,18 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         else return 1;
     }
 
+
+    /*
+    * This add method is called only on first time list fetch.
+    * Is called from the Fragment, where the first network call for blog list is done here*/
     void addItems(List<Blog> list) {
         this.blogList.addAll(list);
         notifyDataSetChanged();
     }
 
+    /*
+    * This update method is called every time apart from the first time list fetch.
+    * Is called from the MainActivity. Previous List must be cleared to store new list, to avoid duplicates*/
     public void updateListItems(List<Blog> blogList) {
         this.blogList.clear();
         this.blogList.addAll(blogList);

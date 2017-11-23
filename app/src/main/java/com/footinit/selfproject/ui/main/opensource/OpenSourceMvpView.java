@@ -13,7 +13,7 @@ public interface OpenSourceMvpView extends MvpView {
 
     void updateOpenSourceList(List<OpenSource> list);
 
-    void onOpenSourceEmptyRetryClicked();
-
     void openOSDetailsActivity(OpenSource openSource);
+
+    void onOpenSourceListReFetched();
 }

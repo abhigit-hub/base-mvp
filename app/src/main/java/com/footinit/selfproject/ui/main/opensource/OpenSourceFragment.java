@@ -15,6 +15,7 @@ import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.di.component.ActivityComponent;
 import com.footinit.selfproject.ui.base.BaseFragment;
+import com.footinit.selfproject.ui.main.Interactor;
 import com.footinit.selfproject.ui.main.opensourcedetails.OSDetailActivity;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public class OpenSourceFragment extends BaseFragment
         implements OpenSourceMvpView {
 
     public static final String KEY_PARCELABLE_OPEN_SOURCE = "KEY_PARCELABLE_OPEN_SOURCE";
+
+    private Interactor.OpenSource callback;
 
     @Inject
     OpenSourceMvpPresenter<OpenSourceMvpView> presenter;
@@ -51,6 +54,11 @@ public class OpenSourceFragment extends BaseFragment
         OpenSourceFragment fragment = new OpenSourceFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setParentCallback(Interactor.OpenSource callback) {
+        this.callback = callback;
+        this.callback.onOpenSourceCallBackAdded();
     }
 
     @Nullable
@@ -82,13 +90,17 @@ public class OpenSourceFragment extends BaseFragment
         rvOpenSource.setItemAnimator(new DefaultItemAnimator());
         rvOpenSource.setAdapter(openSourceAdapter);
 
-        presenter.onViewPrepared();
+        presenter.fetchOpenSourceList();
     }
 
     @Override
     public void onDestroyView() {
         presenter.onDetach();
         openSourceAdapter.setCallback(null);
+        if (callback != null) {
+            callback.onOpenSourceCallBackRemoved();
+            callback = null;
+        }
         super.onDestroyView();
     }
 
@@ -98,15 +110,20 @@ public class OpenSourceFragment extends BaseFragment
     }
 
     @Override
-    public void onOpenSourceEmptyRetryClicked() {
-        presenter.onViewPrepared();
-    }
-
-    @Override
     public void openOSDetailsActivity(OpenSource openSource) {
         Intent intent = OSDetailActivity.getStartIntent(getContext());
         intent.putExtra(KEY_PARCELABLE_OPEN_SOURCE, openSource);
         startActivity(intent);
+    }
+
+    public void onParentCallToFetchList() {
+        presenter.fetchOpenSourceList();
+    }
+
+    @Override
+    public void onOpenSourceListReFetched() {
+        if (callback != null)
+            callback.onOpenSourceListReFetched();
     }
 
     public void setListScrollTop() {

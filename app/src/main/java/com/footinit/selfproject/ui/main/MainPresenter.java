@@ -103,39 +103,41 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
 
     @Override
     public void onRefreshNetworkCall() {
-        getMvpView().updateSwipeRefreshLayout(true);
+        if (getMvpView().isNetworkConnected()) {
+            getMvpView().updateSwipeRefreshLayout(true);
+            getCompositeDisposable().add(
+                    getDataManager().doBlogListApiCall()
+                            .subscribeOn(getSchedulerProvider().io())
+                            .observeOn(getSchedulerProvider().ui())
+                            .subscribe(new Consumer<List<Blog>>() {
+                                @Override
+                                public void accept(List<Blog> blogList) throws Exception {
+                                    if (!isViewAttached())
+                                        return;
 
-        getCompositeDisposable().add(
-                getDataManager().doBlogListApiCall()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<List<Blog>>() {
-                    @Override
-                    public void accept(List<Blog> blogList) throws Exception {
-                        if (!isViewAttached())
-                            return;
+                                    if (blogList != null) {
+                                        getMvpView().updateBlogAdapter(blogList);
+                                    }
+                                    onOpenSourceNetworkCall();
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                    if (!isViewAttached())
+                                        return;
 
-                        if (blogList != null) {
-                            getMvpView().updateBlogAdapter(blogList);
-                        }
-                        onOpenSourceNetworkCall();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        if (!isViewAttached())
-                            return;
-
-                        getMvpView().updateSwipeRefreshLayout(false);
-                        getMvpView().onError("Could not fetch items");
-                    }
-                })
-        );
+                                    getMvpView().updateSwipeRefreshLayout(false);
+                                    getMvpView().onError("Could not fetch items");
+                                }
+                            })
+            );
+        } else {
+            getMvpView().updateSwipeRefreshLayout(false);
+        }
     }
 
     private void onOpenSourceNetworkCall() {
         getMvpView().updateSwipeRefreshLayout(true);
-
         getCompositeDisposable().add(
                 getDataManager().doOpenSourceListCall()
                 .subscribeOn(getSchedulerProvider().io())

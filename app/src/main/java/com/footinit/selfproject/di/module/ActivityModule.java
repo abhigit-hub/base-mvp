@@ -128,11 +128,13 @@ public class ActivityModule {
     }
 
     @Provides
+    @PerActivity
     BlogAdapter providesBlogAdapter() {
         return new BlogAdapter(new ArrayList<Blog>());
     }
 
     @Provides
+    @PerActivity
     OpenSourceAdapter providesOpenSourceAdapter() {
         return new OpenSourceAdapter(new ArrayList<OpenSource>());
     }

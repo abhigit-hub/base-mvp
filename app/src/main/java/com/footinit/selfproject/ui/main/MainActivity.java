@@ -50,19 +50,19 @@ import butterknife.ButterKnife;
 
 /*
 * TODO
-* 1. Login with Google(use email) Oauth
 * 2. Feed Activity (Hetro Items)
-* 3. Refresh Icon
-* 7. Rabbit
+* 3. Refresh Icon - using Vector Drawable
 * 8. Settings
-* 9. Internet Check and show message. Put message inside the framework
 * */
 
-public class MainActivity extends BaseActivity implements MainMvpView {
+public class MainActivity extends BaseActivity
+        implements MainMvpView, Interactor.Blog, Interactor.OpenSource {
 
+    private boolean isCallbackSet = false;
 
     @Inject
     MainMvpPresenter<MainMvpView> presenter;
+
 
     @Inject
     MainPagerAdapter pagerAdapter;
@@ -73,10 +73,9 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @Inject
     OpenSourceAdapter openSourceAdapter;
 
-
-
     @BindView(R.id.tv_app_version)
     TextView tvAppVersion;
+
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -114,6 +113,22 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         presenter.onAttach(this);
 
         setUp();
+    }
+
+    private void setUpCallbacks() {
+        for (int i = 0; i < pagerAdapter.getCount(); i++) {
+            WeakReference<Fragment> fragment = pagerAdapter.getRegisteredFragments().get(i);
+
+            if (fragment != null) {
+                if (fragment.get() instanceof BlogFragment) {
+                    ((BlogFragment) fragment.get()).setParentCallBack(this);
+                } else if (fragment.get() instanceof OpenSourceFragment) {
+                    ((OpenSourceFragment) fragment.get()).setParentCallback(this);
+                }
+            }
+
+            fragment = null;
+        }
     }
 
     public static Intent getStartIntent(Context context) {
@@ -190,7 +205,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @Override
     public void resetAllAdapterPositions() {
         viewPager.setCurrentItem(0);
-        for (int i = 0; i < viewPager.getChildCount(); i++) {
+        for (int i = 0; i < pagerAdapter.getCount(); i++) {
             WeakReference<Fragment> fragment = pagerAdapter.getRegisteredFragments().get(i);
 
             if (fragment != null) {
@@ -258,6 +273,12 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+
+                if (pagerAdapter.getRegisteredFragments() != null
+                        && pagerAdapter.getRegisteredFragments().size() > 0) {
+                    if (!isCallbackSet())
+                        setUpCallbacks();
+                }
             }
 
             @Override
@@ -331,5 +352,51 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     protected void onDestroy() {
         presenter.onDetach();
         super.onDestroy();
+    }
+
+    @Override
+    public void onBlogListReFetched() {
+        WeakReference<Fragment> fragmentWeakReference =
+                pagerAdapter.getRegisteredFragments().get(1);
+
+        if (fragmentWeakReference != null)
+            ((OpenSourceFragment) fragmentWeakReference.get()).onParentCallToFetchList();
+
+        fragmentWeakReference = null;
+    }
+
+    @Override
+    public void onBlogCallBackAdded() {
+        isCallbackSet = true;
+    }
+
+    @Override
+    public void onBlogCallBackRemoved() {
+        isCallbackSet = false;
+    }
+
+    @Override
+    public void onOpenSourceListReFetched() {
+        WeakReference<Fragment> fragmentWeakReference =
+                pagerAdapter.getRegisteredFragments().get(0);
+
+        if (fragmentWeakReference != null)
+            ((BlogFragment) fragmentWeakReference.get()).onParentCallToFetchList();
+
+        fragmentWeakReference = null;
+    }
+
+    @Override
+    public void onOpenSourceCallBackAdded() {
+        isCallbackSet = true;
+    }
+
+    @Override
+    public void onOpenSourceCallBackRemoved() {
+        isCallbackSet = false;
+    }
+
+    private boolean isCallbackSet() {
+        return isCallbackSet;
     }
 }

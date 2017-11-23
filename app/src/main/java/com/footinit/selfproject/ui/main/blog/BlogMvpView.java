@@ -13,7 +13,7 @@ public interface BlogMvpView extends MvpView {
 
     void updateBlogList(List<Blog> blogList);
 
-    void onBlogEmptyRetryClicked();
-
     void openBlogDetailActivity(Blog blog);
+
+    void onBlogListReFetched();
 }
