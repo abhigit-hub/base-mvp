@@ -1,5 +1,8 @@
 package com.footinit.selfproject.data.db.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,14 +13,19 @@ import com.google.gson.annotations.SerializedName;
  * Created by Abhijit on 17-11-2017.
  */
 
+@Entity(tableName = "opensource")
 public class OpenSource implements Parcelable {
 
-    @Expose
-    @SerializedName("project_url")
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private long openSourceId;
+
+    @ColumnInfo(name = "project_url")
+    @Expose @SerializedName("project_url")
     private String projectUrl;
 
-    @Expose
-    @SerializedName("img_url")
+    @ColumnInfo(name = "img_url")
+    @Expose @SerializedName("img_url")
     private String imgUrl;
 
     @Expose
@@ -29,6 +37,14 @@ public class OpenSource implements Parcelable {
     @Expose
     private String description;
 
+
+    public long getOpenSourceId() {
+        return openSourceId;
+    }
+
+    public void setOpenSourceId(long openSourceId) {
+        this.openSourceId = openSourceId;
+    }
 
     public String getProjectUrl() {
         return projectUrl;
@@ -77,6 +93,7 @@ public class OpenSource implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(openSourceId);
         parcel.writeString(projectUrl);
         parcel.writeString(imgUrl);
         parcel.writeString(title);
@@ -89,6 +106,7 @@ public class OpenSource implements Parcelable {
         public OpenSource createFromParcel(Parcel parcel) {
             OpenSource openSource = new OpenSource();
 
+            openSource.openSourceId = parcel.readLong();
             openSource.projectUrl = parcel.readString();
             openSource.imgUrl = parcel.readString();
             openSource.title = parcel.readString();

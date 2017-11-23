@@ -60,6 +60,46 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
+    public Observable<Long> insertBlog(Blog blog) {
+        return dbHelper.insertBlog(blog);
+    }
+
+    @Override
+    public Observable<List<Long>> insertBlogList(List<Blog> blogList) {
+        return dbHelper.insertBlogList(blogList);
+    }
+
+    @Override
+    public Observable<List<Blog>> getBlogList() {
+        return dbHelper.getBlogList();
+    }
+
+    @Override
+    public Completable wipeBlogData() {
+        return dbHelper.wipeBlogData();
+    }
+
+    @Override
+    public Observable<Long> insertOpenSource(OpenSource openSource) {
+        return dbHelper.insertOpenSource(openSource);
+    }
+
+    @Override
+    public Observable<List<Long>> insertOpenSourceList(List<OpenSource> openSourceList) {
+        return dbHelper.insertOpenSourceList(openSourceList);
+    }
+
+    @Override
+    public Observable<List<OpenSource>> getOpenSourceList() {
+        return dbHelper.getOpenSourceList();
+    }
+
+    @Override
+    public Completable wipeOpenSourceData() {
+        return dbHelper.wipeOpenSourceData();
+    }
+
+    @Override
     public Observable<User> doServerLoginApiCall(LoginRequest.ServerLoginRequest request) {
         return apiHelper.doServerLoginApiCall(request);
     }

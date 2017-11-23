@@ -1,7 +1,10 @@
 package com.footinit.selfproject.data.db;
 
+import com.footinit.selfproject.data.db.model.Blog;
+import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.data.db.model.User;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -25,6 +28,9 @@ public class AppDbHelper implements DbHelper {
         this.appDatabase = appDatabase;
     }
 
+
+
+    //USER
     @Override
     public Observable<Long> insertUser(final User user) {
         return Observable.fromCallable(new Callable<Long>() {
@@ -37,12 +43,7 @@ public class AppDbHelper implements DbHelper {
 
     @Override
     public Observable<User> getCurrentUser() {
-        return Observable.fromCallable(new Callable<User>() {
-            @Override
-            public User call() throws Exception {
-                return appDatabase.userDao().getUser();
-            }
-        });
+        return Observable.fromCallable(() -> appDatabase.userDao().getUser());
     }
 
     @Override
@@ -53,5 +54,53 @@ public class AppDbHelper implements DbHelper {
                 appDatabase.userDao().nukeUserTable();
             }
         });
+    }
+
+
+
+
+    //BLOG
+    @Override
+    public Observable<Long> insertBlog(final Blog blog) {
+        return Observable.fromCallable(() -> appDatabase.blogDao().insertBlog(blog));
+    }
+
+    @Override
+    public Observable<List<Long>> insertBlogList(List<Blog> blogList) {
+        return Observable.fromCallable(() -> appDatabase.blogDao().insertBlogList(blogList));
+    }
+
+    @Override
+    public Observable<List<Blog>> getBlogList() {
+        return Observable.fromCallable(() -> appDatabase.blogDao().getBlogList());
+    }
+
+    @Override
+    public Completable wipeBlogData() {
+        return Completable.fromAction(() -> appDatabase.blogDao().nukeBlogTable());
+    }
+
+
+
+
+    //OPEN SOURCE
+    @Override
+    public Observable<Long> insertOpenSource(OpenSource openSource) {
+        return Observable.fromCallable(() -> appDatabase.openSourceDao().insertOpenSource(openSource));
+    }
+
+    @Override
+    public Observable<List<Long>> insertOpenSourceList(List<OpenSource> openSourceList) {
+        return Observable.fromCallable(() -> appDatabase.openSourceDao().insertOpenSourceList(openSourceList));
+    }
+
+    @Override
+    public Observable<List<OpenSource>> getOpenSourceList() {
+        return Observable.fromCallable(() -> appDatabase.openSourceDao().getOpenSourceList());
+    }
+
+    @Override
+    public Completable wipeOpenSourceData() {
+        return Completable.fromAction(() -> appDatabase.openSourceDao().nukeOpenSourceTable());
     }
 }

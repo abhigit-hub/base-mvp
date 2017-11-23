@@ -22,8 +22,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Task;
 
-import java.util.Arrays;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;

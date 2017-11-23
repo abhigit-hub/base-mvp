@@ -117,6 +117,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
 
                                     if (blogList != null) {
                                         getMvpView().updateBlogAdapter(blogList);
+                                        clearBlogListFromDb(blogList);
                                     }
                                     onOpenSourceNetworkCall();
                                 }
@@ -151,6 +152,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
                         getMvpView().updateSwipeRefreshLayout(false);
                         if (list != null) {
                             getMvpView().updateOpenSourceAdapter(list);
+                            clearOpenSourceListFromDb(list);
                         }
                         getMvpView().showMessage("Updated items");
                         getMvpView().resetAllAdapterPositions();
@@ -165,6 +167,90 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
                         getMvpView().onError("Could not fetch items");
                     }
                 })
+        );
+    }
+
+    private void clearBlogListFromDb(List<Blog> blogList) {
+
+        getDataManager().wipeBlogData()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        addBlogListToDb(blogList);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
+    private void addBlogListToDb(List<Blog> blogList) {
+        getCompositeDisposable().add(
+                getDataManager().insertBlogList(blogList)
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(new Consumer<List<Long>>() {
+                            @Override
+                            public void accept(List<Long> longs) throws Exception {
+
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+
+                            }
+                        })
+        );
+    }
+
+    private void clearOpenSourceListFromDb(List<OpenSource> openSourceList) {
+
+        getDataManager().wipeOpenSourceData()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        addOpenSourceListToDb(openSourceList);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
+    private void addOpenSourceListToDb(List<OpenSource> openSourceList) {
+        getCompositeDisposable().add(
+                getDataManager().insertOpenSourceList(openSourceList)
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(new Consumer<List<Long>>() {
+                            @Override
+                            public void accept(List<Long> longs) throws Exception {
+
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+
+                            }
+                        })
         );
     }
 }

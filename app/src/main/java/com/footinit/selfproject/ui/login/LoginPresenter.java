@@ -4,10 +4,8 @@ import android.os.Bundle;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
-import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
-import com.facebook.login.LoginResult;
 import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.DataManager;
 import com.footinit.selfproject.data.db.model.User;

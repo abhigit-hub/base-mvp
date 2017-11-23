@@ -1,5 +1,8 @@
 package com.footinit.selfproject.data.db.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,14 +13,19 @@ import com.google.gson.annotations.SerializedName;
  * Created by Abhijit on 17-11-2017.
  */
 
+@Entity(tableName = "blog")
 public class Blog implements Parcelable{
 
-    @Expose
-    @SerializedName("blog_url")
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private long blogId;
+
+    @ColumnInfo(name = "blog_url")
+    @Expose @SerializedName("blog_url")
     private String blogUrl;
 
-    @Expose
-    @SerializedName("img_url")
+    @ColumnInfo(name = "img_url")
+    @Expose @SerializedName("img_url")
     private String coverImgUrl;
 
     @Expose
@@ -34,6 +42,14 @@ public class Blog implements Parcelable{
     private String date;
 
 
+
+    public long getBlogId() {
+        return blogId;
+    }
+
+    public void setBlogId(long blogId) {
+        this.blogId = blogId;
+    }
 
     public String getBlogUrl() {
         return blogUrl;
@@ -90,6 +106,7 @@ public class Blog implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(blogId);
         parcel.writeString(coverImgUrl);
         parcel.writeString(blogUrl);
         parcel.writeString(title);
@@ -103,6 +120,7 @@ public class Blog implements Parcelable{
         public Blog createFromParcel(Parcel parcel) {
             Blog blog = new Blog();
 
+            blog.blogId = parcel.readLong();
             blog.coverImgUrl = parcel.readString();
             blog.blogUrl = parcel.readString();
             blog.title = parcel.readString();

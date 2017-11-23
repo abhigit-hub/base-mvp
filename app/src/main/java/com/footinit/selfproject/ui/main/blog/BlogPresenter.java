@@ -9,7 +9,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -42,8 +44,10 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
                                         return;
 
                                     getMvpView().hideLoading();
-                                    if (blogList != null)
+                                    if (blogList != null) {
                                         getMvpView().updateBlogList(blogList);
+                                        clearBlogListFromDb(blogList);
+                                    }
                                 }
                             }, new Consumer<Throwable>() {
                                 @Override
@@ -56,7 +60,76 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
                                 }
                             })
             );
+        } else {
+            showPersistentData();
         }
+    }
+
+    private void showPersistentData() {
+        getCompositeDisposable().add(
+                getDataManager().getBlogList()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<List<Blog>>() {
+                    @Override
+                    public void accept(List<Blog> blogList) throws Exception {
+                        if (!isViewAttached())
+                            return;
+
+                        if (blogList != null)
+                            getMvpView().updateBlogList(blogList);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (!isViewAttached())
+                            return;
+
+                        getMvpView().onError("Could not show items");
+                    }
+                })
+        );
+    }
+
+    private void clearBlogListFromDb(List<Blog> blogList) {
+
+        getDataManager().wipeBlogData()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        addBlogListToDb(blogList);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
+    private void addBlogListToDb(List<Blog> blogList) {
+        getCompositeDisposable().add(
+                getDataManager().insertBlogList(blogList)
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(new Consumer<List<Long>>() {
+                            @Override
+                            public void accept(List<Long> longs) throws Exception {
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+
+                            }
+                        })
+        );
     }
 
     @Override
