@@ -32,8 +32,6 @@ import butterknife.ButterKnife;
 public class BlogFragment extends BaseFragment
         implements BlogMvpView {
 
-    public static final String KEY_PARCELABLE_BLOG = "BLOG_PARCELABLE_KEY";
-
     private Interactor.Blog callback;
 
     @Inject
@@ -108,7 +106,7 @@ public class BlogFragment extends BaseFragment
     @Override
     public void openBlogDetailActivity(Blog blog) {
         Intent intent = BlogDetailsActivity.getStartIntent(getContext());
-        intent.putExtra(KEY_PARCELABLE_BLOG, blog);
+        intent.putExtra(BlogDetailsActivity.KEY_PARCELABLE_BLOG, blog);
         startActivity(intent);
     }
 
@@ -121,7 +119,7 @@ public class BlogFragment extends BaseFragment
     @Override
     public void onDestroyView() {
         presenter.onDetach();
-        blogAdapter.setCallback(null);
+        blogAdapter.removeCallback();
         if (callback != null) {
             callback.onBlogCallBackRemoved();
             callback = null;

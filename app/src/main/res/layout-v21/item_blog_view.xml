@@ -43,6 +43,23 @@
                 android:scaleType="fitCenter"
                 tools:src="@drawable/ic_rabbit" />
 
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/google"
+                android:layout_gravity="end"
+                android:layout_margin="5dp">
+
+                <TextView
+                    style="@style/TextStyle.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blog"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:padding="5dp"/>
+            </android.support.v7.widget.CardView>
+
             <TextView
                 android:id="@+id/title_text_view"
                 style="@style/TextStyle.Heading"

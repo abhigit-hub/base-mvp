@@ -58,6 +58,7 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
 
                                     getMvpView().hideLoading();
                                     getMvpView().onError("Could not fetch items");
+                                    showPersistentData();
                                 }
                             })
             );
@@ -130,8 +131,10 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
                                 if (!isViewAttached())
                                     return;
 
-                                if (openSourceList != null)
+                                if (openSourceList != null) {
                                     getMvpView().updateOpenSourceList(openSourceList);
+                                    getMvpView().onError("Showing Stale Items");
+                                }
                             }
                         }, new Consumer<Throwable>() {
                             @Override

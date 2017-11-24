@@ -50,7 +50,70 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
     @Override
     public void onDrawerOptionFeedClicked() {
         getMvpView().closeNavigationDrawer();
-        getMvpView().openFeedActivity();
+        checkFeedAvailableInDb();
+    }
+
+    private void checkFeedAvailableInDb() {
+        getMvpView().showLoading();
+
+        getCompositeDisposable().add(
+                getDataManager().getBlogRecordCount()
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(new Consumer<Long>() {
+                            @Override
+                            public void accept(Long aLong) throws Exception {
+                                if (!isViewAttached())
+                                    return;
+
+                                if (aLong > 0) {
+                                    getMvpView().hideLoading();
+                                    getMvpView().openFeedActivity();
+                                } else {
+                                    getMvpView().hideLoading();
+                                    checkFeedAvailableInOpenSourceDb();
+                                }
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                if (!isViewAttached())
+                                    return;
+
+                                getMvpView().hideLoading();
+                                checkFeedAvailableInOpenSourceDb();
+                            }
+                        })
+        );
+    }
+
+    private void checkFeedAvailableInOpenSourceDb() {
+        getMvpView().showLoading();
+        getCompositeDisposable().add(
+                getDataManager().getOpenSourceRecordCount()
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe((Consumer<Long>) aLong -> {
+                            if (!isViewAttached())
+                                return;
+
+                            if (aLong > 0) {
+                                getMvpView().hideLoading();
+                                getMvpView().openFeedActivity();
+                            } else {
+                                getMvpView().hideLoading();
+                                if (getMvpView().isNetworkConnected())
+                                    getMvpView().onError("Something went wrong");
+                            }
+                        }, throwable -> {
+                            if (!isViewAttached())
+                                return;
+
+                            getMvpView().hideLoading();
+                            if (getMvpView().isNetworkConnected())
+                                getMvpView().onError("Something went wrong");
+                        })
+        );
     }
 
     @Override
@@ -58,7 +121,8 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
         getMvpView().showLoading();
 
     /*
-    * Logout from the Facebook's LoginManager Instance */
+    * Logout from the Facebook's LoginManager Instance
+    * */
         LoginManager.getInstance().logOut();
 
 
@@ -141,32 +205,32 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
         getMvpView().updateSwipeRefreshLayout(true);
         getCompositeDisposable().add(
                 getDataManager().doOpenSourceListCall()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<List<OpenSource>>() {
-                    @Override
-                    public void accept(List<OpenSource> list) throws Exception {
-                        if (!isViewAttached())
-                            return;
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(new Consumer<List<OpenSource>>() {
+                            @Override
+                            public void accept(List<OpenSource> list) throws Exception {
+                                if (!isViewAttached())
+                                    return;
 
-                        getMvpView().updateSwipeRefreshLayout(false);
-                        if (list != null) {
-                            getMvpView().updateOpenSourceAdapter(list);
-                            clearOpenSourceListFromDb(list);
-                        }
-                        getMvpView().showMessage("Updated items");
-                        getMvpView().resetAllAdapterPositions();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        if (!isViewAttached())
-                            return;
+                                getMvpView().updateSwipeRefreshLayout(false);
+                                if (list != null) {
+                                    getMvpView().updateOpenSourceAdapter(list);
+                                    clearOpenSourceListFromDb(list);
+                                }
+                                getMvpView().showMessage("Updated items");
+                                getMvpView().resetAllAdapterPositions();
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                if (!isViewAttached())
+                                    return;
 
-                        getMvpView().updateSwipeRefreshLayout(false);
-                        getMvpView().onError("Could not fetch items");
-                    }
-                })
+                                getMvpView().updateSwipeRefreshLayout(false);
+                                getMvpView().onError("Could not fetch items");
+                            }
+                        })
         );
     }
 

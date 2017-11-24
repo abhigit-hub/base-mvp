@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +18,6 @@ import com.bumptech.glide.Glide;
 import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BaseActivity;
-import com.footinit.selfproject.ui.main.opensource.OpenSourceFragment;
 
 import javax.inject.Inject;
 
@@ -31,6 +29,8 @@ import butterknife.ButterKnife;
  */
 
 public class OSDetailActivity extends BaseActivity implements OSDetailMvpView {
+
+    public static final String KEY_PARCELABLE_OPEN_SOURCE = "KEY_PARCELABLE_OPEN_SOURCE";
 
     @Inject
     OSDetailMvpPresenter<OSDetailMvpView> presenter;
@@ -71,7 +71,7 @@ public class OSDetailActivity extends BaseActivity implements OSDetailMvpView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_os_details);
 
-        currentOpenSource = getIntent().getParcelableExtra(OpenSourceFragment.KEY_PARCELABLE_OPEN_SOURCE);
+        currentOpenSource = getIntent().getParcelableExtra(KEY_PARCELABLE_OPEN_SOURCE);
 
         getActivityComponent().inject(this);
 
@@ -156,16 +156,6 @@ public class OSDetailActivity extends BaseActivity implements OSDetailMvpView {
                 }
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent upIntent = NavUtils.getParentActivityIntent(this);
-        assert upIntent != null;
-        upIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (!NavUtils.shouldUpRecreateTask(this, upIntent)) {
-            NavUtils.navigateUpTo(this, upIntent);
-        }
     }
 
     @Override

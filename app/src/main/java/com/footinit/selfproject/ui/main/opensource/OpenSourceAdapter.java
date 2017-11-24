@@ -46,7 +46,7 @@ public class OpenSourceAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         switch (viewType) {
             case VIEW_TYPE_NORMAL:
                 return new ViewHolder(
-                        LayoutInflater.from(parent.getContext()).inflate(R.layout.item_repo_view, parent, false)
+                        LayoutInflater.from(parent.getContext()).inflate(R.layout.item_open_source_view, parent, false)
                 );
             case VIEW_TYPE_EMPTY:
             default:
@@ -90,6 +90,10 @@ public class OpenSourceAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         this.openSourceList.clear();
         this.openSourceList.addAll(openSourceList);
         notifyDataSetChanged();
+    }
+
+    void removeCallback() {
+        callback = null;
     }
 
     public interface Callback {

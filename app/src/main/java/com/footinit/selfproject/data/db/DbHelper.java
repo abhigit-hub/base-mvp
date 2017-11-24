@@ -30,6 +30,8 @@ public interface DbHelper {
 
     Observable<List<Blog>> getBlogList();
 
+    Observable<Long> getBlogRecordCount();
+
     Completable wipeBlogData();
 
 
@@ -39,6 +41,8 @@ public interface DbHelper {
     Observable<List<Long>> insertOpenSourceList(List<OpenSource> openSourceList);
 
     Observable<List<OpenSource>> getOpenSourceList();
+
+    Observable<Long> getOpenSourceRecordCount();
 
     Completable wipeOpenSourceData();
 

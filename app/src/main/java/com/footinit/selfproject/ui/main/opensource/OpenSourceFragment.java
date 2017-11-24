@@ -32,8 +32,6 @@ import butterknife.ButterKnife;
 public class OpenSourceFragment extends BaseFragment
         implements OpenSourceMvpView {
 
-    public static final String KEY_PARCELABLE_OPEN_SOURCE = "KEY_PARCELABLE_OPEN_SOURCE";
-
     private Interactor.OpenSource callback;
 
     @Inject
@@ -96,7 +94,7 @@ public class OpenSourceFragment extends BaseFragment
     @Override
     public void onDestroyView() {
         presenter.onDetach();
-        openSourceAdapter.setCallback(null);
+        openSourceAdapter.removeCallback();
         if (callback != null) {
             callback.onOpenSourceCallBackRemoved();
             callback = null;
@@ -112,7 +110,7 @@ public class OpenSourceFragment extends BaseFragment
     @Override
     public void openOSDetailsActivity(OpenSource openSource) {
         Intent intent = OSDetailActivity.getStartIntent(getContext());
-        intent.putExtra(KEY_PARCELABLE_OPEN_SOURCE, openSource);
+        intent.putExtra(OSDetailActivity.KEY_PARCELABLE_OPEN_SOURCE, openSource);
         startActivity(intent);
     }
 

@@ -76,6 +76,11 @@ public class AppDbHelper implements DbHelper {
     }
 
     @Override
+    public Observable<Long> getBlogRecordCount() {
+        return Observable.fromCallable(() -> appDatabase.blogDao().getRecordsCount());
+    }
+
+    @Override
     public Completable wipeBlogData() {
         return Completable.fromAction(() -> appDatabase.blogDao().nukeBlogTable());
     }
@@ -97,6 +102,11 @@ public class AppDbHelper implements DbHelper {
     @Override
     public Observable<List<OpenSource>> getOpenSourceList() {
         return Observable.fromCallable(() -> appDatabase.openSourceDao().getOpenSourceList());
+    }
+
+    @Override
+    public Observable<Long> getOpenSourceRecordCount() {
+        return Observable.fromCallable(() -> appDatabase.openSourceDao().getRecordsCount());
     }
 
     @Override

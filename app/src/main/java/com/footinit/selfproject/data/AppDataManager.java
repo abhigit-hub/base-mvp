@@ -44,6 +44,8 @@ public class AppDataManager implements DataManager {
         this.apiHelper = apiHelper;
     }
 
+
+    //DB:USER
     @Override
     public Observable<Long> insertUser(User user) {
         return dbHelper.insertUser(user);
@@ -59,6 +61,9 @@ public class AppDataManager implements DataManager {
         return dbHelper.wipeUserData();
     }
 
+
+
+    //DB:BLOG
     @Override
     public Observable<Long> insertBlog(Blog blog) {
         return dbHelper.insertBlog(blog);
@@ -75,10 +80,18 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
+    public Observable<Long> getBlogRecordCount() {
+        return dbHelper.getBlogRecordCount();
+    }
+
+    @Override
     public Completable wipeBlogData() {
         return dbHelper.wipeBlogData();
     }
 
+
+
+    //DB:OPEN SOURCE
     @Override
     public Observable<Long> insertOpenSource(OpenSource openSource) {
         return dbHelper.insertOpenSource(openSource);
@@ -95,10 +108,18 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
+    public Observable<Long> getOpenSourceRecordCount() {
+        return dbHelper.getOpenSourceRecordCount();
+    }
+
+    @Override
     public Completable wipeOpenSourceData() {
         return dbHelper.wipeOpenSourceData();
     }
 
+
+
+    //API CALL:USER
     @Override
     public Observable<User> doServerLoginApiCall(LoginRequest.ServerLoginRequest request) {
         return apiHelper.doServerLoginApiCall(request);
@@ -114,16 +135,25 @@ public class AppDataManager implements DataManager {
         return apiHelper.doFacebookLoginApiCall(request);
     }
 
+
+
+    //API CALL:BLOG
     @Override
     public Observable<List<Blog>> doBlogListApiCall() {
         return apiHelper.doBlogListApiCall();
     }
 
+
+
+    //API CALL:OPEN SOURCE
     @Override
     public Observable<List<OpenSource>> doOpenSourceListCall() {
         return apiHelper.doOpenSourceListCall();
     }
 
+
+
+    //SHARED PREF:USER
     @Override
     public void setCurrentUserId(Long id) {
         preferenceHelper.setCurrentUserId(id);

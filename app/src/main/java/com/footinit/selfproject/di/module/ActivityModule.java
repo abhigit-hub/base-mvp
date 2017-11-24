@@ -22,6 +22,10 @@ import com.footinit.selfproject.ui.main.blog.BlogPresenter;
 import com.footinit.selfproject.ui.main.blogdetails.BlogDetailsMvpPresenter;
 import com.footinit.selfproject.ui.main.blogdetails.BlogDetailsMvpView;
 import com.footinit.selfproject.ui.main.blogdetails.BlogDetailsPresenter;
+import com.footinit.selfproject.ui.main.feed.FeedAdapter;
+import com.footinit.selfproject.ui.main.feed.FeedMvpPresenter;
+import com.footinit.selfproject.ui.main.feed.FeedMvpView;
+import com.footinit.selfproject.ui.main.feed.FeedPresenter;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceAdapter;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceMvpPresenter;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceMvpView;
@@ -123,6 +127,12 @@ public class ActivityModule {
     }
 
     @Provides
+    @PerActivity
+    FeedMvpPresenter<FeedMvpView> providesFeedPresenter(FeedPresenter<FeedMvpView> presenter) {
+        return presenter;
+    }
+
+    @Provides
     MainPagerAdapter providesMainPagerAdapter(AppCompatActivity activity) {
         return new MainPagerAdapter(activity.getSupportFragmentManager());
     }
@@ -137,5 +147,11 @@ public class ActivityModule {
     @PerActivity
     OpenSourceAdapter providesOpenSourceAdapter() {
         return new OpenSourceAdapter(new ArrayList<OpenSource>());
+    }
+
+    @Provides
+    @PerActivity
+    FeedAdapter providesFeedAdapter() {
+        return new FeedAdapter(new ArrayList<Object>());
     }
 }

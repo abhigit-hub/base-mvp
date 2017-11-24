@@ -34,23 +34,15 @@
         <activity
             android:name=".ui.main.blogdetails.BlogDetailsActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.main.MainActivity"
-            android:screenOrientation="portrait">
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.footinit.selfproject.ui.main.MainActivity" />
-        </activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.main.feed.FeedActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.main.opensourcedetails.OSDetailActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".ui.main.MainActivity">
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.main.MainActivity" />
-        </activity>
+            android:screenOrientation="portrait" />
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>

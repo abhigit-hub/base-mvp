@@ -95,6 +95,10 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         notifyDataSetChanged();
     }
 
+    void removeCallback() {
+        callback = null;
+    }
+
 
     public interface Callback {
 

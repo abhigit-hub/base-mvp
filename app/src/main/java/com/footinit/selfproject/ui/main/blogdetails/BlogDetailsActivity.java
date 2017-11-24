@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +18,6 @@ import com.bumptech.glide.Glide;
 import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.db.model.Blog;
 import com.footinit.selfproject.ui.base.BaseActivity;
-import com.footinit.selfproject.ui.main.blog.BlogFragment;
 
 import javax.inject.Inject;
 
@@ -32,6 +30,8 @@ import butterknife.ButterKnife;
 
 public class BlogDetailsActivity extends BaseActivity
         implements BlogDetailsMvpView {
+
+    public static final String KEY_PARCELABLE_BLOG = "BLOG_PARCELABLE_KEY";
 
     @Inject
     BlogDetailsMvpPresenter<BlogDetailsMvpView> presenter;
@@ -74,7 +74,7 @@ public class BlogDetailsActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blog_details);
 
-        currentBlog = getIntent().getParcelableExtra(BlogFragment.KEY_PARCELABLE_BLOG);
+        currentBlog = getIntent().getParcelableExtra(KEY_PARCELABLE_BLOG);
 
         getActivityComponent().inject(this);
 
@@ -159,18 +159,6 @@ public class BlogDetailsActivity extends BaseActivity
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        Intent upIntent = NavUtils.getParentActivityIntent(this);
-        assert upIntent != null;
-        upIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        if (!NavUtils.shouldUpRecreateTask(this, upIntent)) {
-            NavUtils.navigateUpTo(this, upIntent);
         }
     }
 

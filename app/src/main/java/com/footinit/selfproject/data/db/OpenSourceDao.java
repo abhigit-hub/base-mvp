@@ -25,6 +25,9 @@ public interface OpenSourceDao {
     @Query("SELECT * FROM opensource")
     List<OpenSource> getOpenSourceList();
 
+    @Query("SELECT COUNT(id) FROM opensource")
+    Long getRecordsCount();
+
     @Query("DELETE FROM opensource")
     void nukeOpenSourceTable();
 }

@@ -32,6 +32,7 @@ import com.footinit.selfproject.ui.custom.RoundedImageView;
 import com.footinit.selfproject.ui.login.LoginActivity;
 import com.footinit.selfproject.ui.main.blog.BlogAdapter;
 import com.footinit.selfproject.ui.main.blog.BlogFragment;
+import com.footinit.selfproject.ui.main.feed.FeedActivity;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceAdapter;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceFragment;
 
@@ -52,6 +53,7 @@ import butterknife.ButterKnife;
 * TODO
 * 2. Feed Activity (Hetro Items)
 * 3. Refresh Icon - using Vector Drawable
+* PlaceHolder
 * 8. Settings
 * */
 
@@ -164,8 +166,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void openFeedActivity() {
-        //TODO
-        showMessage("openFeedActivity()");
+        startActivity(FeedActivity.getStartIntent(this));
     }
 
     @Override

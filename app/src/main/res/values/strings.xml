@@ -33,4 +33,5 @@
     //Facebook Strings
     <string name="facebook_app_id">373267699785504</string>
     <string name="fb_login_protocol_scheme">fb373267699785504</string>
+    <string name="my_feed">My Feed</string>
 </resources>

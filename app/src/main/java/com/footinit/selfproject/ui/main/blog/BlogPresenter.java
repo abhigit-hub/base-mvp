@@ -57,6 +57,7 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
 
                                     getMvpView().hideLoading();
                                     getMvpView().onError("Could not fetch items");
+                                    showPersistentData();
                                 }
                             })
             );
@@ -76,8 +77,10 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
                         if (!isViewAttached())
                             return;
 
-                        if (blogList != null)
+                        if (blogList != null) {
                             getMvpView().updateBlogList(blogList);
+                            getMvpView().onError("Showing Stale Items");
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override

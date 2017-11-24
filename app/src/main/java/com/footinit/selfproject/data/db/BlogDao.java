@@ -24,6 +24,9 @@ public interface BlogDao {
     @Query("SELECT * FROM blog")
     List<Blog> getBlogList();
 
+    @Query("SELECT COUNT(id) FROM blog")
+    Long getRecordsCount();
+
     @Query("DELETE FROM blog")
     void nukeBlogTable();
 }
