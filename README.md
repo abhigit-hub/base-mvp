@@ -1,6 +1,5 @@
 # Android Architecture : base-mvp
 
-
 Inspiration mostly from the good works of [Mindorks Open Source Project](https://github.com/MindorksOpenSource/android-mvp-architecture). But the app is tweaked a little on the navigation front and also houses a few more features, compared to the original app.
 
 This repo is a sample application that implements **MVP** architecture using **RxJava2**, **Dagger2**, **Retrofit2**, **Room** and **Butterknife**.
@@ -13,7 +12,7 @@ We use Retrofit and Room library for network calls and database operations respe
 - APIs and Architectures Used
 - Library reference resources
 
-## What does this app do?
+## What does this app do?(#what-does-this-app-do?)
 To sum up in one line, this app shows news feed(Open Source codes and Developer Blogs) to the consumer. 
 Now, the idea is essentially the same but the manner in which it is served to the Consumer, differs(precisely 3).
 
