@@ -6,7 +6,7 @@ This repo is a sample application that implements **MVP** architecture using **R
 We use Retrofit and Room library for network calls and database operations respectively. _(Original App uses FastAndroidNetworking and GreenDao)_
 
 ## Topics
-- What does this app do?(#what-does-this-app-do?)
+- What does this app do?#what-does-this-app-do?
 - Quick Glimpse
 - Naive Attempt at Animated Vector Drawable
 - APIs and Architectures Used
