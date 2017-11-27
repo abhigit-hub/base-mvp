@@ -112,6 +112,7 @@
         android:contentDescription="@string/open_in_browser"
         app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|right|end"
+        android:src="@drawable/avd_browser_enhanced"
         style="@style/FabStyle"/>
 
 </android.support.design.widget.CoordinatorLayout>

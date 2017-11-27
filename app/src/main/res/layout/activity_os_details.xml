@@ -104,6 +104,7 @@
         android:layout_marginRight="10dp"
         android:contentDescription="@string/open_in_browser"
         app:layout_anchor="@id/appbar"
+        android:src="@drawable/avd_browser_enhanced"
         app:layout_anchorGravity="bottom|right|end" />
 
 </android.support.design.widget.CoordinatorLayout>

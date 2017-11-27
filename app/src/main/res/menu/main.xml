@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_cut"
-        android:icon="@drawable/avd_cut"
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/avd_refresh"
         android:title="@string/cut"
         app:showAsAction="always" />
 </menu>

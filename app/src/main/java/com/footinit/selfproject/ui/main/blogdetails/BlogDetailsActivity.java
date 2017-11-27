@@ -2,12 +2,16 @@ package com.footinit.selfproject.ui.main.blogdetails;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -102,6 +106,7 @@ public class BlogDetailsActivity extends BaseActivity
                         .load(currentBlog.getCoverImgUrl())
                         .asBitmap()
                         .fitCenter()
+                        .placeholder(R.drawable.placeholder)
                         .into(ivCover);
 
             if (currentBlog.getTitle() != null)
@@ -120,6 +125,8 @@ public class BlogDetailsActivity extends BaseActivity
             presenter.onBlogDetailsDisplayedError();
         }
 
+        setUpAnimation();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,6 +134,17 @@ public class BlogDetailsActivity extends BaseActivity
                     presenter.onBlogFABClicked();
             }
         });
+    }
+
+    private void setUpAnimation() {
+        Drawable drawable = fab.getDrawable();
+
+        if (drawable != null && drawable instanceof Animatable)
+            ((Animatable) drawable).start();
+        else if (drawable instanceof AnimatedVectorDrawableCompat)
+            ((AnimatedVectorDrawableCompat) drawable).start();
+        else if (drawable instanceof AnimatedVectorDrawable)
+            ((AnimatedVectorDrawable) drawable).start();
     }
 
     private void setUpCollapsingToolbarLayout() {
@@ -146,6 +164,7 @@ public class BlogDetailsActivity extends BaseActivity
                 } else if (isShow) {
                     collapsingToolbarLayout.setTitle(" ");
                     isShow = false;
+                    setUpAnimation();
                 }
             }
         });

@@ -150,6 +150,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                         .load(blog.getCoverImgUrl())
                         .asBitmap()
                         .fitCenter()
+                        .placeholder(R.drawable.placeholder)
                         .into(ivCover);
 
             if (blog.getTitle() != null)

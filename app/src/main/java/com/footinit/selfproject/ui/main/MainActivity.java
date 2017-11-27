@@ -51,9 +51,6 @@ import butterknife.ButterKnife;
 
 /*
 * TODO
-* 2. Feed Activity (Hetro Items)
-* 3. Refresh Icon - using Vector Drawable
-* PlaceHolder
 * 8. Settings
 * */
 
@@ -96,6 +93,8 @@ public class MainActivity extends BaseActivity
 
     @BindView(R.id.swipe_to_refresh)
     CustomSwipeToRefresh refreshLayout;
+
+    private Menu menu;
 
     private TextView tvUserName, tvUserEmail;
 
@@ -254,8 +253,18 @@ public class MainActivity extends BaseActivity
             @Override
             public void onRefresh() {
                 presenter.onRefreshNetworkCall();
+                startRefreshIconAnimation();
             }
         });
+    }
+
+    private void startRefreshIconAnimation() {
+        if (menu != null) {
+            Drawable drawable = menu.findItem(R.id.action_refresh).getIcon();
+            if (drawable instanceof Animatable) {
+                ((Animatable) drawable).start();
+            }
+        }
     }
 
     private void setUpViewPager() {
@@ -322,6 +331,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -336,7 +346,8 @@ public class MainActivity extends BaseActivity
         }
 
         switch (item.getItemId()) {
-            case R.id.action_cut:
+            case R.id.action_refresh:
+                presenter.onRefreshNetworkCall();
                 return true;
             default:
                 return onOptionsItemSelected(item);

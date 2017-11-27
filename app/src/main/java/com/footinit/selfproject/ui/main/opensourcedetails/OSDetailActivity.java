@@ -2,12 +2,16 @@ package com.footinit.selfproject.ui.main.opensourcedetails;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,6 +104,7 @@ public class OSDetailActivity extends BaseActivity implements OSDetailMvpView {
                         .load(currentOpenSource.getImgUrl())
                         .asBitmap()
                         .fitCenter()
+                        .placeholder(R.drawable.placeholder)
                         .into(ivCover);
 
             if (currentOpenSource.getTitle() != null)
@@ -115,6 +120,8 @@ public class OSDetailActivity extends BaseActivity implements OSDetailMvpView {
             presenter.onOSDetailsDisplayedError();
         }
 
+        setUpAnimation();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,6 +129,17 @@ public class OSDetailActivity extends BaseActivity implements OSDetailMvpView {
                     presenter.onOpenSourceFABClicked();
             }
         });
+    }
+
+    private void setUpAnimation() {
+        Drawable drawable = fab.getDrawable();
+
+        if (drawable != null && drawable instanceof Animatable)
+            ((Animatable) drawable).start();
+        else if (drawable instanceof AnimatedVectorDrawableCompat)
+            ((AnimatedVectorDrawableCompat) drawable).start();
+        else if (drawable instanceof AnimatedVectorDrawable)
+            ((AnimatedVectorDrawable) drawable).start();
     }
 
     @Override
@@ -153,6 +171,7 @@ public class OSDetailActivity extends BaseActivity implements OSDetailMvpView {
                 } else if (isShow) {
                     collapsingToolbarLayout.setTitle(" ");
                     isShow = false;
+                    setUpAnimation();
                 }
             }
         });
