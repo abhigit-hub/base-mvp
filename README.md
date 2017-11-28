@@ -5,8 +5,8 @@ Inspiration mostly from the good works of [Mindorks Open Source Project](https:/
 This repo is a sample application that implements **MVP** architecture using **RxJava2**, **Dagger2**, **Retrofit2**, **Room** and **Butterknife**.
 We use Retrofit and Room library for network calls and database operations respectively. _(Original App uses FastAndroidNetworking and GreenDao)_
 
-## Topics
-- What does this app do?#what-does-this-app-do?
+## [Topics](#quick-glimpse)
+- What does this app do?
 - Quick Glimpse
 - Naive Attempt at Animated Vector Drawable
 - APIs and Architectures Used
