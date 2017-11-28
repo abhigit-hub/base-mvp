@@ -19,10 +19,7 @@ Now, the idea is essentially the same but the manner in which it is served to th
 
 ## Quick Glimpse
 
-![Home Screen](https://imgur.com/nRnNgLZ)
-![Feed Screen](https://imgur.com/Olj5T88)
-![Blog Details Screen](https://imgur.com/zLDhMvE)
-![Open Source Details Screen](https://imgur.com/nRnNgLZ)
+![](https://imgur.com/nRnNgLZ.gif)
 
 ## Naive Attempt at Animated Vector Drawable
 
