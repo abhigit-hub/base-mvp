@@ -4,6 +4,7 @@ Inspiration mostly from the good works of [Mindorks Open Source Project](https:/
 
 This repo is a sample application that implements **MVP** architecture using **RxJava2**, **Dagger2**, **Retrofit2**, **Room** and **Butterknife**.
 We use Retrofit and Room library for network calls and database operations respectively. _(Original App uses FastAndroidNetworking and GreenDao)_
+Another highlight is that we have also added **Data Persistency** which isn't available on the original app. 
 
 ## Topics
 - [What does this app do?](#what-does-this-app-do)
@@ -17,6 +18,11 @@ To sum up in one line, this app shows news feed(Open Source codes and Developer 
 Now, the idea is essentially the same but the manner in which it is served to the Consumer, differs(precisely 3).
 
 ## Quick Glimpse
+
+![Home Screen](https://imgur.com/nRnNgLZ)
+![Feed Screen](https://imgur.com/Olj5T88)
+![Blog Details Screen](https://imgur.com/zLDhMvE)
+![Open Source Details Screen](https://imgur.com/nRnNgLZ)
 
 ## Naive Attempt at Animated Vector Drawable
 
