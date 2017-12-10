@@ -86,6 +86,8 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$rootProject.roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$rootProject.roomVersion"
     androidTestImplementation "android.arch.persistence.room:testing:$rootProject.roomVersion"
+
+    //Dagger2
     testAnnotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2Version"
     androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2Version"
 

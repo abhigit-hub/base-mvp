@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Self Project</string>
+    <string name="app_name">Base MVP</string>
     <string name="app_market_link">market://details?id=</string>
     <string name="app_google_playstore_link">https://play.google.com/store/apps/details?id=</string>
     <string name="some_error">Some Error Occurred!</string>

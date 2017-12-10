@@ -80,7 +80,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     /*
     * This add method is called only on first time list fetch.
-    * Is called from the Fragment, where the first network call for blog list is done here*/
+    * Is called from the Fragment, where the first network call for blog list is done*/
     void addItems(List<Blog> list) {
         this.blogList.addAll(list);
         notifyDataSetChanged();
@@ -177,9 +177,6 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
 
     public class EmptyViewHolder extends BaseViewHolder {
-
-        @BindView(R.id.btn_retry)
-        Button retryButton;
 
         public EmptyViewHolder(View itemView) {
             super(itemView);

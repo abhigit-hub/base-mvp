@@ -47,13 +47,4 @@
     <color name="orange">#FFA500</color>
     <color name="yellow">#fff44f</color>
     <color name="dark_green">#388e3c</color>
-
-    <color name="test">#f1cb30</color>
-    <color name="test1">#b1f1cb30</color>
-
-    <color name="test2">#da143a</color>
-    <color name="test3">#b1da143a</color>
-
-    <color name="test4">#78b86d</color>
-    <color name="test5">#b178b86d</color>
 </resources>

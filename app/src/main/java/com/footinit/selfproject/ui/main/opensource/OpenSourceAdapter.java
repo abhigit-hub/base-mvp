@@ -162,9 +162,6 @@ public class OpenSourceAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     public class EmptyViewHolder extends BaseViewHolder {
 
-        @BindView(R.id.btn_retry)
-        Button retryButton;
-
         public EmptyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

@@ -32,6 +32,8 @@ public class MvpApp extends Application {
                 .applicationModule(new ApplicationModule(this))
                 .build();
 
+        applicationComponent.inject(this);
+
         AppLogger.init();
 
         /*

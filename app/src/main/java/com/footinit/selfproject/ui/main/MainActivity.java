@@ -59,6 +59,14 @@ public class MainActivity extends BaseActivity
 
     private boolean isCallbackSet = false;
 
+    private Menu menu;
+
+    private TextView tvUserName, tvUserEmail;
+
+    private RoundedImageView ivProfilePic;
+
+    ActionBarDrawerToggle drawerToggle;
+
     @Inject
     MainMvpPresenter<MainMvpView> presenter;
 
@@ -72,9 +80,10 @@ public class MainActivity extends BaseActivity
     @Inject
     OpenSourceAdapter openSourceAdapter;
 
+
+
     @BindView(R.id.tv_app_version)
     TextView tvAppVersion;
-
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -94,13 +103,7 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.swipe_to_refresh)
     CustomSwipeToRefresh refreshLayout;
 
-    private Menu menu;
 
-    private TextView tvUserName, tvUserEmail;
-
-    private RoundedImageView ivProfilePic;
-
-    ActionBarDrawerToggle drawerToggle;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -357,7 +360,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        unlockDrawer();
     }
 
     @Override

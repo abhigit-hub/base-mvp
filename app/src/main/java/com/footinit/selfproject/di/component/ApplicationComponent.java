@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.facebook.CallbackManager;
+import com.footinit.selfproject.MvpApp;
 import com.footinit.selfproject.data.DataManager;
 import com.footinit.selfproject.di.ApplicationContext;
 import com.footinit.selfproject.di.module.ApplicationModule;
@@ -33,4 +34,5 @@ public interface ApplicationComponent {
     CallbackManager getCallbackManager();
 
 
+    void inject(MvpApp mvpApp);
 }

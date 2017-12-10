@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
 public class BlogDetailsActivity extends BaseActivity
         implements BlogDetailsMvpView {
 
-    public static final String KEY_PARCELABLE_BLOG = "BLOG_PARCELABLE_KEY";
+    public static final String KEY_PARCELABLE_BLOG = "KEY_PARCELABLE_BLOG";
 
     @Inject
     BlogDetailsMvpPresenter<BlogDetailsMvpView> presenter;
@@ -91,7 +91,6 @@ public class BlogDetailsActivity extends BaseActivity
 
     @Override
     protected void setUp() {
-
         setUpCollapsingToolbarLayout();
         setSupportActionBar(toolbar);
 

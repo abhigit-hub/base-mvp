@@ -10,9 +10,9 @@ public final class AppConstants {
         //PC
     }
 
-    public static final String DB_NAME = "FootInIt.db";
+    public static final String DB_NAME = "BaseMVP.db";
     public static final int DB_VERSION = 1;
-    public static final String PREF_NAME = "FootInit_pref";
+    public static final String PREF_NAME = "BaseMVP_pref";
 
     public static final String TIMESTAMP = "yyyyMMdd_HHmmss";
 
