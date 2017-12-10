@@ -25,6 +25,7 @@ Now, the idea is essentially the same but the manner in which it is served to th
 ![Open Source Details Screen](https://imgur.com/hr1jVK8.gif)
 
 ## Naive Attempt at Animated Vector Drawable
+![Chrome](https://imgur.com/o6iSFz1.gif)
 
 ## APIs and Architectures Used
 
