@@ -1,10 +1,10 @@
 # Android Architecture : base-mvp
 
-Inspiration mostly from the good works of [Mindorks Open Source Project](https://github.com/MindorksOpenSource/android-mvp-architecture). But the app is tweaked a little on the navigation front and also houses a few more features, compared to the original app.
+Inspiration mostly from the good works of [Mindorks Open Source Project](https://github.com/MindorksOpenSource/android-mvp-architecture). But this app is tweaked a little on the navigation front and also houses a few more features, compared to the original app.
 
 This repo is a sample application that implements **MVP** architecture using **RxJava2**, **Dagger2**, **Retrofit2**, **Room** and **Butterknife**.
-We use Retrofit and Room library for network calls and database operations respectively. _(Original App uses FastAndroidNetworking and GreenDao)_
-Another highlight is that we have also added **Data Persistency** which isn't available on the original app. 
+This uses Retrofit and Room library for network calls and database operations respectively. _(Original App uses FastAndroidNetworking and GreenDao)_
+Another highlight is that this repo also has **Data Persistency** unlike the original app. 
 
 ## Topics
 - [What does this app do?](#what-does-this-app-do)
@@ -44,6 +44,7 @@ I'm also looking at adding the following Libraries for future iterations:
 1. Mockito
 1. JUnit
 1. Bottom Sheets
+1. Shared Element Transition and Content Transition
 
 
 
