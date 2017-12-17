@@ -1,5 +1,6 @@
 package com.footinit.selfproject.ui.main.blog;
 
+import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.DataManager;
 import com.footinit.selfproject.data.db.model.Blog;
 import com.footinit.selfproject.ui.base.BasePresenter;
@@ -33,6 +34,7 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
     public void fetchBlogList() {
         if (getMvpView().isNetworkConnected()) {
             getMvpView().showLoading();
+            getMvpView().onPullToRefreshEvent(true);
             getCompositeDisposable().add(
                     getDataManager().doBlogListApiCall()
                             .subscribeOn(getSchedulerProvider().io())
@@ -44,6 +46,7 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
                                         return;
 
                                     getMvpView().hideLoading();
+                                    getMvpView().onPullToRefreshEvent(false);
                                     if (blogList != null) {
                                         getMvpView().updateBlogList(blogList);
                                         clearBlogListFromDb(blogList);
@@ -56,12 +59,14 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
                                         return;
 
                                     getMvpView().hideLoading();
-                                    getMvpView().onError("Could not fetch items");
+                                    getMvpView().onPullToRefreshEvent(false);
+                                    getMvpView().onError(R.string.could_not_fetch_items);
                                     showPersistentData();
                                 }
                             })
             );
         } else {
+            getMvpView().onPullToRefreshEvent(false);
             showPersistentData();
         }
     }
@@ -79,7 +84,7 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
 
                         if (blogList != null) {
                             getMvpView().updateBlogList(blogList);
-                            getMvpView().onError("Showing Stale Items");
+                            getMvpView().onError(R.string.no_internet);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -88,7 +93,7 @@ public class BlogPresenter<V extends BlogMvpView> extends BasePresenter<V>
                         if (!isViewAttached())
                             return;
 
-                        getMvpView().onError("Could not show items");
+                        getMvpView().onError(R.string.could_not_show_items);
                     }
                 })
         );

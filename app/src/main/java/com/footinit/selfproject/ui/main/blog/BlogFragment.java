@@ -1,5 +1,6 @@
 package com.footinit.selfproject.ui.main.blog;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,31 +33,21 @@ import butterknife.ButterKnife;
 public class BlogFragment extends BaseFragment
         implements BlogMvpView {
 
-    private Interactor.Blog callback;
-
     @Inject
     BlogMvpPresenter<BlogMvpView> presenter;
-
     @Inject
     BlogAdapter blogAdapter;
-
     @Inject
     LinearLayoutManager linearLayoutManager;
-
     @BindView(R.id.rv_blog)
     RecyclerView rvBlog;
-
+    private Interactor.Blog callback;
 
     public static BlogFragment newInstance() {
         Bundle args = new Bundle();
         BlogFragment fragment = new BlogFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public void setParentCallBack(Interactor.Blog callback) {
-        this.callback = callback;
-        this.callback.onBlogCallBackAdded();
     }
 
     @Nullable
@@ -92,11 +83,12 @@ public class BlogFragment extends BaseFragment
 
     @Override
     public void updateBlogList(List<Blog> blogList) {
-        blogAdapter.addItems(blogList);
+        blogAdapter.updateListItems(blogList);
     }
 
     public void setListScrollTop() {
-        linearLayoutManager.scrollToPositionWithOffset(0, 0);
+        if (linearLayoutManager != null)
+            linearLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 
     public void onParentCallToFetchList() {
@@ -117,13 +109,27 @@ public class BlogFragment extends BaseFragment
     }
 
     @Override
+    public void onPullToRefreshEvent(boolean isVisible) {
+        if (callback != null)
+            callback.updateSwipeRefreshLayoutOne(isVisible);
+    }
+
+    @Override
     public void onDestroyView() {
         presenter.onDetach();
-        blogAdapter.removeCallback();
-        if (callback != null) {
-            callback.onBlogCallBackRemoved();
-            callback = null;
-        }
         super.onDestroyView();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        callback = (Interactor.Blog) context;
+    }
+
+    @Override
+    public void onDetach() {
+        callback = null;
+        blogAdapter.removeCallback();
+        super.onDetach();
     }
 }

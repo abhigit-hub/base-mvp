@@ -24,8 +24,6 @@ import android.widget.TextView;
 
 import com.footinit.selfproject.BuildConfig;
 import com.footinit.selfproject.R;
-import com.footinit.selfproject.data.db.model.Blog;
-import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BaseActivity;
 import com.footinit.selfproject.ui.custom.CustomSwipeToRefresh;
 import com.footinit.selfproject.ui.custom.RoundedImageView;
@@ -37,7 +35,6 @@ import com.footinit.selfproject.ui.main.opensource.OpenSourceAdapter;
 import com.footinit.selfproject.ui.main.opensource.OpenSourceFragment;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -57,53 +54,37 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivity
         implements MainMvpView, Interactor.Blog, Interactor.OpenSource {
 
-    private boolean isCallbackSet = false;
-
-    private Menu menu;
-
-    private TextView tvUserName, tvUserEmail;
-
-    private RoundedImageView ivProfilePic;
-
     ActionBarDrawerToggle drawerToggle;
-
     @Inject
     MainMvpPresenter<MainMvpView> presenter;
-
-
     @Inject
     MainPagerAdapter pagerAdapter;
-
     @Inject
     BlogAdapter blogAdapter;
-
     @Inject
     OpenSourceAdapter openSourceAdapter;
-
-
-
     @BindView(R.id.tv_app_version)
     TextView tvAppVersion;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
     @BindView(R.id.navigation_view)
     NavigationView navigationView;
-
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-
     @BindView(R.id.main_view_pager)
     ViewPager viewPager;
-
     @BindView(R.id.main_tab_layout)
     TabLayout tabLayout;
-
     @BindView(R.id.swipe_to_refresh)
     CustomSwipeToRefresh refreshLayout;
+    private boolean blogRefreshFlag = true, openSourceRefreshFlag = true;
+    private Menu menu;
+    private TextView tvUserName, tvUserEmail;
+    private RoundedImageView ivProfilePic;
 
-
+    public static Intent getStartIntent(Context context) {
+        return new Intent(context, MainActivity.class);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,26 +98,6 @@ public class MainActivity extends BaseActivity
         presenter.onAttach(this);
 
         setUp();
-    }
-
-    private void setUpCallbacks() {
-        for (int i = 0; i < pagerAdapter.getCount(); i++) {
-            WeakReference<Fragment> fragment = pagerAdapter.getRegisteredFragments().get(i);
-
-            if (fragment != null) {
-                if (fragment.get() instanceof BlogFragment) {
-                    ((BlogFragment) fragment.get()).setParentCallBack(this);
-                } else if (fragment.get() instanceof OpenSourceFragment) {
-                    ((OpenSourceFragment) fragment.get()).setParentCallback(this);
-                }
-            }
-
-            fragment = null;
-        }
-    }
-
-    public static Intent getStartIntent(Context context) {
-        return new Intent(context, MainActivity.class);
     }
 
     @Override
@@ -186,26 +147,6 @@ public class MainActivity extends BaseActivity
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
-    @Override
-    public void updateSwipeRefreshLayout(boolean isVisible) {
-        refreshLayout.setRefreshing(isVisible);
-    }
-
-    @Override
-    public void updateBlogAdapter(List<Blog> blogList) {
-        if (blogList != null) {
-            blogAdapter.updateListItems(blogList);
-        }
-    }
-
-    @Override
-    public void updateOpenSourceAdapter(List<OpenSource> openSourceList) {
-        if (openSourceList != null) {
-            openSourceAdapter.updateListItems(openSourceList);
-        }
-    }
-
-    @Override
     public void resetAllAdapterPositions() {
         viewPager.setCurrentItem(0);
         for (int i = 0; i < pagerAdapter.getCount(); i++) {
@@ -255,7 +196,7 @@ public class MainActivity extends BaseActivity
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.onRefreshNetworkCall();
+                refresh();
                 startRefreshIconAnimation();
             }
         });
@@ -286,12 +227,6 @@ public class MainActivity extends BaseActivity
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-
-                if (pagerAdapter.getRegisteredFragments() != null
-                        && pagerAdapter.getRegisteredFragments().size() > 0) {
-                    if (!isCallbackSet())
-                        setUpCallbacks();
-                }
             }
 
             @Override
@@ -350,11 +285,16 @@ public class MainActivity extends BaseActivity
 
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                presenter.onRefreshNetworkCall();
+                refresh();
                 return true;
             default:
                 return onOptionsItemSelected(item);
         }
+    }
+
+    private void refresh() {
+        onBlogListReFetched();
+        onOpenSourceListReFetched();
     }
 
     @Override
@@ -381,13 +321,9 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onBlogCallBackAdded() {
-        isCallbackSet = true;
-    }
-
-    @Override
-    public void onBlogCallBackRemoved() {
-        isCallbackSet = false;
+    public void updateSwipeRefreshLayoutOne(boolean isVisible) {
+        blogRefreshFlag = isVisible;
+        checkRefreshFlag();
     }
 
     @Override
@@ -402,16 +338,24 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onOpenSourceCallBackAdded() {
-        isCallbackSet = true;
+    public void updateSwipeRefreshLayoutTwo(boolean isVisible) {
+        openSourceRefreshFlag = isVisible;
+        checkRefreshFlag();
     }
 
-    @Override
-    public void onOpenSourceCallBackRemoved() {
-        isCallbackSet = false;
+    private void updateSwipeRefreshLayout(boolean isVisible) {
+        refreshLayout.setRefreshing(isVisible);
     }
 
-    private boolean isCallbackSet() {
-        return isCallbackSet;
+    private void checkRefreshFlag() {
+        if (!blogRefreshFlag && !openSourceRefreshFlag) {
+            updateSwipeRefreshLayout(false);
+            resetAllAdapterPositions();
+            showMessage(getString(R.string.updated_items));
+            blogRefreshFlag = true;
+            openSourceRefreshFlag = true;
+        } else {
+            updateSwipeRefreshLayout(true);
+        }
     }
 }

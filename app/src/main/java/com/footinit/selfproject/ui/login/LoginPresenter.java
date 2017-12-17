@@ -86,7 +86,7 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
                                         return;
 
                                     getMvpView().hideLoading();
-                                    getMvpView().showMessage("Signing in");
+                                    getMvpView().showMessage(R.string.signing_in);
                                 }
                             }, new Consumer<Throwable>() {
                                 @Override
@@ -95,7 +95,7 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
                                         return;
 
                                     getMvpView().hideLoading();
-                                    getMvpView().onError("Server Sign In Failed");
+                                    getMvpView().onError(R.string.server_sign_in_failed);
                                 }
                             })
             );
@@ -152,7 +152,7 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
     * Based on the ID's, we can deduce the form of Login
     * */
     private void onGoogleLoginSuccessful(GoogleSignInAccount account) {
-        getMvpView().showMessage("Google Sign in Successful");
+        getMvpView().showMessage(R.string.google_sign_in_successful);
 
         insertCurrentUserIntoDb(
                 new User(
@@ -176,7 +176,7 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
     * Based on the ID's, we can deduce the form of Login
     * */
     private void onFacebookLoginSuccessful(Profile profile, JSONObject object) {
-        getMvpView().showMessage("Facebook Sign in Successful");
+        getMvpView().showMessage(R.string.facebook_sign_in_successful);
 
         String email = object.optString("email");
         if (email == null) email = " ";
@@ -218,7 +218,7 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
                                     return;
 
                                 getMvpView().hideLoading();
-                                getMvpView().onError("Error: Cannot initiate Sign in");
+                                getMvpView().onError(R.string.cannnot_initiate_sign_in);
                             }
                         })
         );

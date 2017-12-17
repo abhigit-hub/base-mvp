@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +41,10 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         this.callback = callback;
     }
 
+    void removeCallback() {
+        callback = null;
+    }
+
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -69,34 +72,30 @@ public class BlogAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         else return VIEW_TYPE_EMPTY;
     }
 
+
     @Override
     public int getItemCount() {
-
         if (blogList != null && blogList.size() > 0)
             return blogList.size();
         else return 1;
     }
 
-
     /*
-    * This add method is called only on first time list fetch.
-    * Is called from the Fragment, where the first network call for blog list is done*/
-    void addItems(List<Blog> list) {
+    * Update the current list to an assigned list
+    *
+    * This update method is called every time the list item has to be updated.
+    * Previous List must be cleared to store new list, to avoid duplicates*/
+    void updateListItems(List<Blog> list) {
+        this.blogList.clear();
         this.blogList.addAll(list);
         notifyDataSetChanged();
     }
 
     /*
-    * This update method is called every time apart from the first time list fetch.
-    * Is called from the MainActivity. Previous List must be cleared to store new list, to avoid duplicates*/
-    public void updateListItems(List<Blog> blogList) {
-        this.blogList.clear();
+    * Adds assigned list to the existing list*/
+    public void addItems(List<Blog> blogList) {
         this.blogList.addAll(blogList);
         notifyDataSetChanged();
-    }
-
-    void removeCallback() {
-        callback = null;
     }
 
 

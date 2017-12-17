@@ -101,7 +101,7 @@ public abstract class BaseActivity extends AppCompatActivity
         if (NetworkUtils.isNetworkConnected(getApplicationContext()))
             return true;
         else {
-            onError("No Internet");
+            onError(R.string.no_internet);
             return false;
         }
     }

@@ -1,5 +1,6 @@
 package com.footinit.selfproject.ui.main.opensource;
 
+import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.DataManager;
 import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BasePresenter;
@@ -33,6 +34,7 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
     public void fetchOpenSourceList() {
         if (getMvpView().isNetworkConnected()) {
             getMvpView().showLoading();
+            getMvpView().onPullToRefreshEvent(true);
             getCompositeDisposable().add(
                     getDataManager().doOpenSourceListCall()
                             .subscribeOn(getSchedulerProvider().io())
@@ -49,6 +51,7 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
                                     }
 
                                     getMvpView().hideLoading();
+                                    getMvpView().onPullToRefreshEvent(false);
                                 }
                             }, new Consumer<Throwable>() {
                                 @Override
@@ -57,12 +60,14 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
                                         return;
 
                                     getMvpView().hideLoading();
-                                    getMvpView().onError("Could not fetch items");
+                                    getMvpView().onPullToRefreshEvent(false);
+                                    getMvpView().onError(R.string.could_not_fetch_items);
                                     showPersistentData();
                                 }
                             })
             );
         } else {
+            getMvpView().onPullToRefreshEvent(false);
             showPersistentData();
         }
     }
@@ -133,7 +138,7 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
 
                                 if (openSourceList != null) {
                                     getMvpView().updateOpenSourceList(openSourceList);
-                                    getMvpView().onError("Showing Stale Items");
+                                    getMvpView().onError(R.string.no_internet);
                                 }
                             }
                         }, new Consumer<Throwable>() {
@@ -142,7 +147,7 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
                                 if (!isViewAttached())
                                     return;
 
-                                getMvpView().onError("Could not show items");
+                                getMvpView().onError(R.string.could_not_show_items);
                             }
                         })
         );

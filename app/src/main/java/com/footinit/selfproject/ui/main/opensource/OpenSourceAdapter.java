@@ -1,11 +1,9 @@
 package com.footinit.selfproject.ui.main.opensource;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,6 +38,10 @@ public class OpenSourceAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     public void setCallback(Callback callback) {
         this.callback = callback;
+    }
+
+    void removeCallback() {
+        callback = null;
     }
 
     @Override
@@ -77,24 +79,21 @@ public class OpenSourceAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     /*
-    * This add method is called only on first time list fetch.
-    * Is called from the Fragment, where the first network call for opensource list is done here*/
-    void addItems(List<OpenSource> list) {
+    * Update the current list to an assigned list
+    *
+    * This update method is called every time the list item has to be updated.
+    * Previous List must be cleared to store new list, to avoid duplicates*/
+    void updateListItems(List<OpenSource> list) {
+        this.openSourceList.clear();
         this.openSourceList.addAll(list);
         notifyDataSetChanged();
     }
 
     /*
-    * This update method is called every time apart from the first time list fetch.
-    * Is called from the MainActivity. Previous List must be cleared to store new list, to avoid duplicates*/
-    public void updateListItems(List<OpenSource> openSourceList) {
-        this.openSourceList.clear();
+    * Adds assigned list to the existing list*/
+    public void addItems(List<OpenSource> openSourceList) {
         this.openSourceList.addAll(openSourceList);
         notifyDataSetChanged();
-    }
-
-    void removeCallback() {
-        callback = null;
     }
 
     public interface Callback {

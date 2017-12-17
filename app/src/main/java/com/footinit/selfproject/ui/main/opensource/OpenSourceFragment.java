@@ -1,5 +1,6 @@
 package com.footinit.selfproject.ui.main.opensource;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,31 +33,21 @@ import butterknife.ButterKnife;
 public class OpenSourceFragment extends BaseFragment
         implements OpenSourceMvpView {
 
-    private Interactor.OpenSource callback;
-
     @Inject
     OpenSourceMvpPresenter<OpenSourceMvpView> presenter;
-
     @Inject
     OpenSourceAdapter openSourceAdapter;
-
     @Inject
     LinearLayoutManager linearLayoutManager;
-
     @BindView(R.id.rv_open_source)
     RecyclerView rvOpenSource;
-
+    private Interactor.OpenSource callback;
 
     public static OpenSourceFragment newInstance() {
         Bundle args = new Bundle();
         OpenSourceFragment fragment = new OpenSourceFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public void setParentCallback(Interactor.OpenSource callback) {
-        this.callback = callback;
-        this.callback.onOpenSourceCallBackAdded();
     }
 
     @Nullable
@@ -94,17 +85,12 @@ public class OpenSourceFragment extends BaseFragment
     @Override
     public void onDestroyView() {
         presenter.onDetach();
-        openSourceAdapter.removeCallback();
-        if (callback != null) {
-            callback.onOpenSourceCallBackRemoved();
-            callback = null;
-        }
         super.onDestroyView();
     }
 
     @Override
     public void updateOpenSourceList(List<OpenSource> list) {
-        openSourceAdapter.addItems(list);
+        openSourceAdapter.updateListItems(list);
     }
 
     @Override
@@ -124,7 +110,27 @@ public class OpenSourceFragment extends BaseFragment
             callback.onOpenSourceListReFetched();
     }
 
+    @Override
+    public void onPullToRefreshEvent(boolean isVisible) {
+        if (callback != null)
+            callback.updateSwipeRefreshLayoutTwo(isVisible);
+    }
+
     public void setListScrollTop() {
-        linearLayoutManager.scrollToPositionWithOffset(0, 0);
+        if (linearLayoutManager != null)
+            linearLayoutManager.scrollToPositionWithOffset(0, 0);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        callback = (Interactor.OpenSource) context;
+    }
+
+    @Override
+    public void onDetach() {
+        callback = null;
+        openSourceAdapter.removeCallback();
+        super.onDetach();
     }
 }

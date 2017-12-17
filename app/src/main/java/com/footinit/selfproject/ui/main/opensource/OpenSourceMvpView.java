@@ -16,4 +16,6 @@ public interface OpenSourceMvpView extends MvpView {
     void openOSDetailsActivity(OpenSource openSource);
 
     void onOpenSourceListReFetched();
+
+    void onPullToRefreshEvent(boolean isVisible);
 }

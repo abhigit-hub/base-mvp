@@ -1,13 +1,10 @@
 package com.footinit.selfproject.ui.main;
 
 import com.facebook.login.LoginManager;
+import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.DataManager;
-import com.footinit.selfproject.data.db.model.Blog;
-import com.footinit.selfproject.data.db.model.OpenSource;
 import com.footinit.selfproject.ui.base.BasePresenter;
 import com.footinit.selfproject.utils.rx.SchedulerProvider;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -103,7 +100,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
                             } else {
                                 getMvpView().hideLoading();
                                 if (getMvpView().isNetworkConnected())
-                                    getMvpView().onError("Something went wrong");
+                                    getMvpView().onError(R.string.something_went_wrong);
                             }
                         }, throwable -> {
                             if (!isViewAttached())
@@ -111,7 +108,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
 
                             getMvpView().hideLoading();
                             if (getMvpView().isNetworkConnected())
-                                getMvpView().onError("Something went wrong");
+                                getMvpView().onError(R.string.something_went_wrong);
                         })
         );
     }
@@ -148,14 +145,14 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
                     @Override
                     public void onComplete() {
                         getMvpView().hideLoading();
-                        getMvpView().showMessage("Logging you out");
+                        getMvpView().showMessage(R.string.logging_you_out);
                         getMvpView().openLoginActivity();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         getMvpView().hideLoading();
-                        getMvpView().showMessage("There was an error while logging you out");
+                        getMvpView().showMessage(R.string.there_was_an_error_logout);
                     }
                 });
     }
@@ -163,158 +160,5 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
     @Override
     public void onViewInitialized() {
 
-    }
-
-    @Override
-    public void onRefreshNetworkCall() {
-        if (getMvpView().isNetworkConnected()) {
-            getMvpView().updateSwipeRefreshLayout(true);
-            getCompositeDisposable().add(
-                    getDataManager().doBlogListApiCall()
-                            .subscribeOn(getSchedulerProvider().io())
-                            .observeOn(getSchedulerProvider().ui())
-                            .subscribe(new Consumer<List<Blog>>() {
-                                @Override
-                                public void accept(List<Blog> blogList) throws Exception {
-                                    if (!isViewAttached())
-                                        return;
-
-                                    if (blogList != null) {
-                                        getMvpView().updateBlogAdapter(blogList);
-                                        clearBlogListFromDb(blogList);
-                                    }
-                                    onOpenSourceNetworkCall();
-                                }
-                            }, new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable throwable) throws Exception {
-                                    if (!isViewAttached())
-                                        return;
-
-                                    getMvpView().updateSwipeRefreshLayout(false);
-                                    getMvpView().onError("Could not fetch items");
-                                }
-                            })
-            );
-        } else {
-            getMvpView().updateSwipeRefreshLayout(false);
-        }
-    }
-
-    private void onOpenSourceNetworkCall() {
-        getMvpView().updateSwipeRefreshLayout(true);
-        getCompositeDisposable().add(
-                getDataManager().doOpenSourceListCall()
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<List<OpenSource>>() {
-                            @Override
-                            public void accept(List<OpenSource> list) throws Exception {
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().updateSwipeRefreshLayout(false);
-                                if (list != null) {
-                                    getMvpView().updateOpenSourceAdapter(list);
-                                    clearOpenSourceListFromDb(list);
-                                }
-                                getMvpView().showMessage("Updated items");
-                                getMvpView().resetAllAdapterPositions();
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().updateSwipeRefreshLayout(false);
-                                getMvpView().onError("Could not fetch items");
-                            }
-                        })
-        );
-    }
-
-    private void clearBlogListFromDb(List<Blog> blogList) {
-
-        getDataManager().wipeBlogData()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        addBlogListToDb(blogList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
-    }
-
-    private void addBlogListToDb(List<Blog> blogList) {
-        getCompositeDisposable().add(
-                getDataManager().insertBlogList(blogList)
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<List<Long>>() {
-                            @Override
-                            public void accept(List<Long> longs) throws Exception {
-
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-
-                            }
-                        })
-        );
-    }
-
-    private void clearOpenSourceListFromDb(List<OpenSource> openSourceList) {
-
-        getDataManager().wipeOpenSourceData()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        addOpenSourceListToDb(openSourceList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
-    }
-
-    private void addOpenSourceListToDb(List<OpenSource> openSourceList) {
-        getCompositeDisposable().add(
-                getDataManager().insertOpenSourceList(openSourceList)
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<List<Long>>() {
-                            @Override
-                            public void accept(List<Long> longs) throws Exception {
-
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-
-                            }
-                        })
-        );
     }
 }

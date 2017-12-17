@@ -16,4 +16,6 @@ public interface BlogMvpView extends MvpView {
     void openBlogDetailActivity(Blog blog);
 
     void onBlogListReFetched();
+
+    void onPullToRefreshEvent(boolean isVisible);
 }

@@ -1,5 +1,6 @@
 package com.footinit.selfproject.ui.main.feed;
 
+import com.footinit.selfproject.R;
 import com.footinit.selfproject.data.DataManager;
 import com.footinit.selfproject.data.db.model.Blog;
 import com.footinit.selfproject.data.db.model.OpenSource;
@@ -81,7 +82,7 @@ public class FeedPresenter<V extends FeedMvpView> extends BasePresenter<V>
                         return;
 
                     getMvpView().hideLoading();
-                    getMvpView().onError("Something went wrong");
+                    getMvpView().onError(R.string.something_went_wrong);
 
                     if (list != null && list.size() > 0)
                         getMvpView().onListRetrieved(list);
