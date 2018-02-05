@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "855004350268",
-    "project_id": "firebase-selfproject"
+    "project_number": "370418346291",
+    "project_id": "ibasemvp"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:855004350268:android:6208ab3de0fe79f3",
+        "mobilesdk_app_id": "1:370418346291:android:a1ebe701f52ab107",
         "android_client_info": {
-          "package_name": "com.footinit.selfproject"
+          "package_name": "com.footinit.ibasemvp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "855004350268-2nvr8j3qrn4l81vqrrmcdqedkdafnjlm.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.footinit.selfproject",
-            "certificate_hash": "3e87e5825a78e90ee0ffff40db1b9e5743dfb049"
-          }
+          "client_id": "370418346291-tqci8b5cl5320ae5e2u1lqjqf7ilne0l.apps.googleusercontent.com",
+          "client_type": 3
         },
         {
-          "client_id": "855004350268-h3ctskkhk7nnn5inpgueimgt6pad6h38.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "370418346291-ajp61ntcv8us9778bt9kcdsjovd982tr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.footinit.ibasemvp",
+            "certificate_hash": "3e87e5825a78e90ee0ffff40db1b9e5743dfb049"
+          }
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCXfRrq95mKQKPPPAYwRknz9Ozm-5G_IS8"
+          "current_key": "AIzaSyBnYeE6isR9N66nY6WMTAKLZNRvMDj9pHw"
         }
       ],
       "services": {

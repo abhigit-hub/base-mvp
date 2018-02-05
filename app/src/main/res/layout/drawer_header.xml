@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <com.footinit.selfproject.ui.custom.RoundedImageView
+    <com.footinit.ibasemvp.ui.custom.RoundedImageView
         android:id="@+id/iv_profile_picture"
         android:layout_width="64dp"
         android:layout_height="64dp"
