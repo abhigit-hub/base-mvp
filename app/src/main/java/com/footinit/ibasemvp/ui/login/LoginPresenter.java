@@ -22,7 +22,6 @@ import org.json.JSONObject;
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
 /**
@@ -69,36 +68,33 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
 
 
             getMvpView().showLoading();
+
             getCompositeDisposable().add(
                     getDataManager().doServerLoginApiCall(new LoginRequest.ServerLoginRequest(email, password))
+                            .doOnNext(user -> getDataManager().saveUserReturnsLong(user))
                             .subscribeOn(getSchedulerProvider().io())
                             .observeOn(getSchedulerProvider().ui())
-                            .subscribe(new Consumer<User>() {
-                                @Override
-                                public void accept(User user) throws Exception {
-                                    insertCurrentUserIntoDb(user);
-                                    getDataManager().updateUserInfoInPrefs(user.getUserID(),
-                                            user.getUserName(),
-                                            user.getEmail(),
-                                            DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_SERVER);
+                            .subscribe(user -> {
+                                getDataManager().updateUserInfoInPrefs(user.getUserID(),
+                                        user.getUserName(),
+                                        user.getEmail(),
+                                        DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_SERVER);
 
-                                    if (!isViewAttached())
-                                        return;
+                                if (!isViewAttached())
+                                    return;
 
-                                    getMvpView().hideLoading();
-                                    getMvpView().showMessage(R.string.signing_in);
-                                }
-                            }, new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable throwable) throws Exception {
-                                    if (!isViewAttached())
-                                        return;
+                                getMvpView().hideLoading();
+                                getMvpView().showMessage(R.string.signing_in);
+                                getMvpView().openMainActivity();
+                            }, throwable -> {
+                                if (!isViewAttached())
+                                    return;
 
-                                    getMvpView().hideLoading();
-                                    getMvpView().onError(R.string.server_sign_in_failed);
-                                }
+                                getMvpView().hideLoading();
+                                getMvpView().onError(R.string.server_sign_in_failed);
                             })
             );
+
         }
     }
 
@@ -151,20 +147,35 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
     *
     * Based on the ID's, we can deduce the form of Login
     * */
+
     private void onGoogleLoginSuccessful(GoogleSignInAccount account) {
         getMvpView().showMessage(R.string.google_sign_in_successful);
 
-        insertCurrentUserIntoDb(
-                new User(
-                        (CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_GOOGLE.getType())),
-                        account.getDisplayName(),
-                        account.getEmail())
+        long id = CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_GOOGLE.getType());
+        String name = account.getDisplayName();
+        String email = account.getEmail();
+
+        getCompositeDisposable().add(
+                getDataManager().saveUser(
+                        new User(id, name, email))
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(aLong -> {
+                            if (!isViewAttached())
+                                return;
+
+                            getMvpView().hideLoading();
+                            getMvpView().openMainActivity();
+                        }, throwable -> {
+                            getMvpView().hideLoading();
+                            getMvpView().onError(R.string.cannnot_initiate_sign_in);
+                        })
         );
 
         getDataManager().updateUserInfoInPrefs(
-                CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_GOOGLE.getType()),
-                account.getDisplayName(),
-                account.getEmail(),
+                id,
+                name,
+                email,
                 DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_GOOGLE);
     }
 
@@ -180,47 +191,30 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
 
         String email = object.optString("email");
         if (email == null) email = " ";
+        long id = CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB.getType());
+        String name = profile.getName();
 
-        insertCurrentUserIntoDb(
-                new User(
-                        (CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB.getType())),
-                        profile.getName(),
-                        email)
+        getCompositeDisposable().add(
+                getDataManager().saveUser(
+                        new User(id, name, email))
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(aLong -> {
+                            if (!isViewAttached())
+                                return;
+
+                            getMvpView().hideLoading();
+                            getMvpView().openMainActivity();
+                        }, throwable -> {
+                            getMvpView().hideLoading();
+                            getMvpView().onError(R.string.cannnot_initiate_sign_in);
+                        })
         );
 
         getDataManager().updateUserInfoInPrefs(
-                CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB.getType()),
-                profile.getName(),
+                id,
+                name,
                 email,
                 DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB);
-    }
-
-    private void insertCurrentUserIntoDb(User user) {
-        getMvpView().showLoading();
-
-        getCompositeDisposable().add(
-                getDataManager().insertUser(user)
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<Long>() {
-                            @Override
-                            public void accept(Long aLong) throws Exception {
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().hideLoading();
-                                getMvpView().openMainActivity();
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().hideLoading();
-                                getMvpView().onError(R.string.cannnot_initiate_sign_in);
-                            }
-                        })
-        );
     }
 }

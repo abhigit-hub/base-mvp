@@ -32,7 +32,7 @@ public class AppDbHelper implements DbHelper {
 
     //USER
     @Override
-    public Observable<Long> insertUser(final User user) {
+    public Observable<Long> saveUser(final User user) {
         return Observable.fromCallable(new Callable<Long>() {
             @Override
             public Long call() throws Exception {
@@ -56,7 +56,10 @@ public class AppDbHelper implements DbHelper {
         });
     }
 
-
+    @Override
+    public Long saveUserReturnsLong(User user) {
+        return appDatabase.userDao().insertUser(user);
+    }
 
 
     //BLOG

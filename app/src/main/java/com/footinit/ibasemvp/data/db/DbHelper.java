@@ -16,11 +16,16 @@ import io.reactivex.Observable;
 public interface DbHelper {
 
     //User
-    Observable<Long> insertUser(User user);
+    Observable<Long> saveUser(User user);
 
     Observable<User> getCurrentUser();
 
     Completable wipeUserData();
+
+    /*
+    Until more clarity there will be 2 methods for inserting User to DB
+    * */
+    Long saveUserReturnsLong(User user);
 
 
     //Blog

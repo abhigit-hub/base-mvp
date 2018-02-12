@@ -47,8 +47,8 @@ public class AppDataManager implements DataManager {
 
     //DB:USER
     @Override
-    public Observable<Long> insertUser(User user) {
-        return dbHelper.insertUser(user);
+    public Observable<Long> saveUser(User user) {
+        return dbHelper.saveUser(user);
     }
 
     @Override
@@ -61,6 +61,10 @@ public class AppDataManager implements DataManager {
         return dbHelper.wipeUserData();
     }
 
+    @Override
+    public Long saveUserReturnsLong(User user) {
+        return dbHelper.saveUserReturnsLong(user);
+    }
 
 
     //DB:BLOG

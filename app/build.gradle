@@ -94,6 +94,11 @@ dependencies {
 
     //Facebook SDK
     compile 'com.facebook.android:facebook-login:[4,5)'
+
+    //Testing
+    testCompile "junit:junit:$rootProject.junit"
+    testCompile "org.mockito:mockito-core:$rootProject.mockito"
+    testCompile "org.robolectric:robolectric:$rootProject.robolectric"
 }
 
 
