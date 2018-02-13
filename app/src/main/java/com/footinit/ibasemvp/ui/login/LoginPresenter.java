@@ -158,22 +158,7 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
         String name = account.getDisplayName();
         String email = account.getEmail();
 
-        getCompositeDisposable().add(
-                getDataManager().saveUser(
-                        new User(id, name, email))
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(aLong -> {
-                            if (!isViewAttached())
-                                return;
-
-                            getMvpView().hideLoading();
-                            getMvpView().openMainActivity();
-                        }, throwable -> {
-                            getMvpView().hideLoading();
-                            getMvpView().onError(R.string.cannnot_initiate_sign_in);
-                        })
-        );
+        insertCurrentUserIntoDb(new User(id,name, email));
 
         getDataManager().updateUserInfoInPrefs(
                 id,
@@ -197,9 +182,18 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
         long id = CommonUtils.getNegativeLong(DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB.getType());
         String name = profile.getName();
 
+        insertCurrentUserIntoDb(new User(id,name, email));
+
+        getDataManager().updateUserInfoInPrefs(
+                id,
+                name,
+                email,
+                DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB);
+    }
+
+    private void insertCurrentUserIntoDb(User user) {
         getCompositeDisposable().add(
-                getDataManager().saveUser(
-                        new User(id, name, email))
+                getDataManager().saveUser(user)
                         .subscribeOn(getSchedulerProvider().io())
                         .observeOn(getSchedulerProvider().ui())
                         .subscribe(aLong -> {
@@ -213,11 +207,5 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
                             getMvpView().onError(R.string.cannnot_initiate_sign_in);
                         })
         );
-
-        getDataManager().updateUserInfoInPrefs(
-                id,
-                name,
-                email,
-                DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_FB);
     }
 }
