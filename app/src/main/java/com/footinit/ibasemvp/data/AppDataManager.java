@@ -61,11 +61,6 @@ public class AppDataManager implements DataManager {
         return dbHelper.wipeUserData();
     }
 
-    @Override
-    public Long saveUserReturnsLong(User user) {
-        return dbHelper.saveUserReturnsLong(user);
-    }
-
 
     //DB:BLOG
     @Override

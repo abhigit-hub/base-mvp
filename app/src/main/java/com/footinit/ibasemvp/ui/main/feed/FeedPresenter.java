@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -31,62 +32,40 @@ public class FeedPresenter<V extends FeedMvpView> extends BasePresenter<V>
 
     @Override
     public void onViewPrepared() {
-        retrieveBlogList();
+        retrieveAllList();
     }
 
-    private void retrieveBlogList() {
+    private void retrieveAllList() {
         getMvpView().showLoading();
+
         getCompositeDisposable().add(
-                getDataManager().getBlogList()
+                Observable.zip(getDataManager().getBlogList(),
+                        getDataManager().getOpenSourceList(),
+                        (t1, t2) -> {
+                            List<Object> list = new ArrayList<>();
+
+                            if (t1 != null && t1.size() > 0) list.addAll(t1);
+                            if (t2 != null && t2.size() > 0) list.addAll(t2);
+                            return list;
+                        })
                         .subscribeOn(getSchedulerProvider().io())
                         .observeOn(getSchedulerProvider().ui())
-                        .subscribe(blogList -> {
+                        .subscribe(objectList -> {
                             if (!isViewAttached())
                                 return;
 
                             getMvpView().hideLoading();
-                            if (blogList != null) {
-                                ArrayList<Object> list = new ArrayList<>();
-                                list.addAll(blogList);
-                                retrieveOpenSourceList(list);
+                            if (objectList != null && objectList.size() > 0) {
+                                Collections.shuffle(objectList);
+                                getMvpView().onListRetrieved(objectList);
                             }
-
                         }, throwable -> {
                             if (!isViewAttached())
                                 return;
 
                             getMvpView().hideLoading();
-                            retrieveOpenSourceList(new ArrayList<Object>());
+                            getMvpView().onError(R.string.something_went_wrong);
                         })
-        );
-    }
-
-    private void retrieveOpenSourceList(List<Object> list) {
-        getMvpView().showLoading();
-        getCompositeDisposable().add(
-                getDataManager().getOpenSourceList()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(openSourceList -> {
-                    if (!isViewAttached())
-                        return;
-
-                    getMvpView().hideLoading();
-                    if (openSourceList != null) {
-                        list.addAll(openSourceList);
-                        Collections.shuffle(list);
-                        getMvpView().onListRetrieved(list);
-                    }
-                }, throwable -> {
-                    if (!isViewAttached())
-                        return;
-
-                    getMvpView().hideLoading();
-                    getMvpView().onError(R.string.something_went_wrong);
-
-                    if (list != null && list.size() > 0)
-                        getMvpView().onListRetrieved(list);
-                })
         );
     }
 

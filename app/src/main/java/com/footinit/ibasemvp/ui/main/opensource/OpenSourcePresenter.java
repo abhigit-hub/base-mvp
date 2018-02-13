@@ -4,6 +4,7 @@ import com.footinit.ibasemvp.R;
 import com.footinit.ibasemvp.data.DataManager;
 import com.footinit.ibasemvp.data.db.model.OpenSource;
 import com.footinit.ibasemvp.ui.base.BasePresenter;
+import com.footinit.ibasemvp.utils.AppLogger;
 import com.footinit.ibasemvp.utils.rx.SchedulerProvider;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.CompletableObserver;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -35,37 +37,37 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
         if (getMvpView().isNetworkConnected()) {
             getMvpView().showLoading();
             getMvpView().onPullToRefreshEvent(true);
+
             getCompositeDisposable().add(
                     getDataManager().doOpenSourceListCall()
+                            .flatMap(openSources -> Observable.concat(
+                                    getDataManager().wipeOpenSourceData().subscribeOn(getSchedulerProvider().io()).toObservable(),
+                                    getDataManager().insertOpenSourceList(openSources).subscribeOn(getSchedulerProvider().io()))
+                                    .doOnError(throwable -> AppLogger.e(throwable, OpenSourcePresenter.class.getSimpleName()))
+                                    .ignoreElements()
+                                    .andThen(Observable.just(openSources)))
                             .subscribeOn(getSchedulerProvider().io())
                             .observeOn(getSchedulerProvider().ui())
-                            .subscribe(new Consumer<List<OpenSource>>() {
-                                @Override
-                                public void accept(List<OpenSource> list) throws Exception {
-                                    if (!isViewAttached())
-                                        return;
+                            .subscribe(openSources -> {
+                                if (!isViewAttached())
+                                    return;
 
-                                    if (list != null) {
-                                        getMvpView().updateOpenSourceList(list);
-                                        clearOpenSourceListFromDb(list);
-                                    }
+                                getMvpView().hideLoading();
+                                getMvpView().onPullToRefreshEvent(false);
 
-                                    getMvpView().hideLoading();
-                                    getMvpView().onPullToRefreshEvent(false);
-                                }
-                            }, new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable throwable) throws Exception {
-                                    if (!isViewAttached())
-                                        return;
+                                if (openSources != null && openSources.size() > 0)
+                                    getMvpView().updateOpenSourceList(openSources);
+                            }, throwable -> {
+                                if (!isViewAttached())
+                                    return;
 
-                                    getMvpView().hideLoading();
-                                    getMvpView().onPullToRefreshEvent(false);
-                                    getMvpView().onError(R.string.could_not_fetch_items);
-                                    showPersistentData();
-                                }
+                                getMvpView().hideLoading();
+                                getMvpView().onPullToRefreshEvent(false);
+                                getMvpView().onError(R.string.could_not_fetch_items);
+                                showPersistentData();
                             })
             );
+
         } else {
             getMvpView().onPullToRefreshEvent(false);
             showPersistentData();
@@ -83,72 +85,24 @@ public class OpenSourcePresenter<V extends OpenSourceMvpView> extends BasePresen
         getMvpView().openOSDetailsActivity(openSource);
     }
 
-    private void clearOpenSourceListFromDb(List<OpenSource> openSourceList) {
-
-        getDataManager().wipeOpenSourceData()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        addOpenSourceListToDb(openSourceList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
-    }
-
-    private void addOpenSourceListToDb(List<OpenSource> openSourceList) {
-        getCompositeDisposable().add(
-                getDataManager().insertOpenSourceList(openSourceList)
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<List<Long>>() {
-                            @Override
-                            public void accept(List<Long> longs) throws Exception {
-
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-
-                            }
-                        })
-        );
-    }
-
     private void showPersistentData() {
         getCompositeDisposable().add(
                 getDataManager().getOpenSourceList()
                         .subscribeOn(getSchedulerProvider().io())
                         .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<List<OpenSource>>() {
-                            @Override
-                            public void accept(List<OpenSource> openSourceList) throws Exception {
-                                if (!isViewAttached())
-                                    return;
+                        .subscribe(openSourceList -> {
+                            if (!isViewAttached())
+                                return;
 
-                                if (openSourceList != null) {
-                                    getMvpView().updateOpenSourceList(openSourceList);
-                                    getMvpView().onError(R.string.no_internet);
-                                }
+                            if (openSourceList != null) {
+                                getMvpView().updateOpenSourceList(openSourceList);
+                                getMvpView().onError(R.string.no_internet);
                             }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!isViewAttached())
-                                    return;
+                        }, throwable -> {
+                            if (!isViewAttached())
+                                return;
 
-                                getMvpView().onError(R.string.could_not_show_items);
-                            }
+                            getMvpView().onError(R.string.could_not_show_items);
                         })
         );
     }

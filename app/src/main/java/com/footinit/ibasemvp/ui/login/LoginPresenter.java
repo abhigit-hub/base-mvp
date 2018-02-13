@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
@@ -71,7 +72,9 @@ public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V>
 
             getCompositeDisposable().add(
                     getDataManager().doServerLoginApiCall(new LoginRequest.ServerLoginRequest(email, password))
-                            .doOnNext(user -> getDataManager().saveUserReturnsLong(user))
+                            .concatMap(user -> getDataManager().saveUser(user)
+                                    .ignoreElements()
+                                    .andThen(Observable.just(user)))
                             .subscribeOn(getSchedulerProvider().io())
                             .observeOn(getSchedulerProvider().ui())
                             .subscribe(user -> {

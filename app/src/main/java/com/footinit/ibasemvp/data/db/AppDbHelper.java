@@ -56,11 +56,6 @@ public class AppDbHelper implements DbHelper {
         });
     }
 
-    @Override
-    public Long saveUserReturnsLong(User user) {
-        return appDatabase.userDao().insertUser(user);
-    }
-
 
     //BLOG
     @Override

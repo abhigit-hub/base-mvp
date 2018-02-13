@@ -22,11 +22,6 @@ public interface DbHelper {
 
     Completable wipeUserData();
 
-    /*
-    Until more clarity there will be 2 methods for inserting User to DB
-    * */
-    Long saveUserReturnsLong(User user);
-
 
     //Blog
     Observable<Long> insertBlog(Blog blog);

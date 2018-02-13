@@ -9,8 +9,10 @@ import com.footinit.ibasemvp.utils.rx.SchedulerProvider;
 import javax.inject.Inject;
 
 import io.reactivex.CompletableObserver;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -54,47 +56,17 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
         getMvpView().showLoading();
 
         getCompositeDisposable().add(
-                getDataManager().getBlogRecordCount()
+                Observable.zip(
+                        getDataManager().getBlogRecordCount(),
+                        getDataManager().getOpenSourceRecordCount(),
+                        (aLong, aLong2) -> aLong > 0 || aLong2 > 0)
                         .subscribeOn(getSchedulerProvider().io())
                         .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<Long>() {
-                            @Override
-                            public void accept(Long aLong) throws Exception {
-                                if (!isViewAttached())
-                                    return;
-
-                                if (aLong > 0) {
-                                    getMvpView().hideLoading();
-                                    getMvpView().openFeedActivity();
-                                } else {
-                                    getMvpView().hideLoading();
-                                    checkFeedAvailableInOpenSourceDb();
-                                }
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                if (!isViewAttached())
-                                    return;
-
-                                getMvpView().hideLoading();
-                                checkFeedAvailableInOpenSourceDb();
-                            }
-                        })
-        );
-    }
-
-    private void checkFeedAvailableInOpenSourceDb() {
-        getMvpView().showLoading();
-        getCompositeDisposable().add(
-                getDataManager().getOpenSourceRecordCount()
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe((Consumer<Long>) aLong -> {
+                        .subscribe(aBoolean -> {
                             if (!isViewAttached())
                                 return;
 
-                            if (aLong > 0) {
+                            if (aBoolean) {
                                 getMvpView().hideLoading();
                                 getMvpView().openFeedActivity();
                             } else {
@@ -103,9 +75,6 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V>
                                     getMvpView().onError(R.string.something_went_wrong);
                             }
                         }, throwable -> {
-                            if (!isViewAttached())
-                                return;
-
                             getMvpView().hideLoading();
                             if (getMvpView().isNetworkConnected())
                                 getMvpView().onError(R.string.something_went_wrong);
